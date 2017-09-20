@@ -1,0 +1,120 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+{% load static %}
+{% include 'bootstrap.html' %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Employee WCL</title>
+<!--     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"> -->
+  <!--   /Users/venkat299/code/python/mpm/temp/static/bootstrap/css -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+  </head>
+  <body >
+  <div class="container-fluid">
+    <div>
+
+
+    <nav class="rwd-table">
+      <div class="container pg_header_row">
+      <div class="navbar-header">
+      <ul class="nav navbar-nav navbar-left">
+        <li {% if request.path == 'emp_area_summ' %} class="button"{% endif %}><a  class ='hlink' href="{% url 'emp_area_summ' %}">Home</a></li>
+
+        <li{% if request.path == 'empl_list' %} class="active"{% endif %}><a  class ='hlink' href="{% url 'empl_list' %}">Employee List</a></li>
+
+        <li{% if request.path == 'emp_create' %} class="active"{% endif %}><a   class ='hlink' href="{% url 'emp_create' %}">Create</a></li>
+
+        <li{% if request.path == '' %} class="active"{% endif %}><a   class ='hlink' href="{% url 'logout' %}">Logout</a></li>
+
+      </ul>
+    </div>
+    </div>
+    </nav>
+
+
+    </div>
+  </div>
+
+    <div class="bk_img"></div>
+  </body>
+</html>
+<style type="text/css">
+.container-fluid{
+   padding-right: 0 !important; 
+ padding-left: 0 !important; 
+}
+
+.navbar-brand { position: relative; z-index: 2; }
+
+.navbar-nav.navbar-right .btn { position: relative; z-index: 2; padding: 4px 20px; margin: 10px auto; transition: transform 0.3s; }
+
+.navbar .navbar-collapse { position: relative; overflow: hidden !important; }
+.navbar .navbar-collapse .navbar-right > li:last-child { padding-left: 22px; }
+
+.navbar .nav-collapse { position: absolute; z-index: 1; top: 0; left: 0; right: 0; bottom: 0; margin: 0; padding-right: 120px; padding-left: 80px; width: 100%; }
+.navbar.navbar-default .nav-collapse { background-color: #f8f8f8; }
+.navbar.navbar-inverse .nav-collapse { background-color: #222; }
+.navbar .nav-collapse .navbar-form { border-width: 0; box-shadow: none; }
+.nav-collapse>li { float: right; }
+
+.btn.btn-circle { border-radius: 50px; }
+.btn.btn-outline { background-color: transparent; }
+
+.navbar-nav.navbar-right .btn:not(.collapsed) {
+    background-color: rgb(111, 84, 153);
+    border-color: rgb(111, 84, 153);
+    color: rgb(255, 255, 255);
+}
+
+.navbar.navbar-default .nav-collapse,
+.navbar.navbar-inverse .nav-collapse {
+    height: auto !important;
+    transition: transform 0.3s;
+    transform: translate(0px,-50px);
+}
+.navbar.navbar-default .nav-collapse.in,
+.navbar.navbar-inverse .nav-collapse.in {
+    transform: translate(0px,0px);
+}
+
+
+@media screen and (max-width: 767px) {
+    .navbar .navbar-collapse .navbar-right > li:last-child { padding-left: 15px; padding-right: 15px; } 
+    
+    .navbar .nav-collapse { margin: 7.5px auto; padding: 0; }
+    .navbar .nav-collapse .navbar-form { margin: 0; }
+    .nav-collapse>li { float: none; }
+    
+    .navbar.navbar-default .nav-collapse,
+    .navbar.navbar-inverse .nav-collapse {
+        transform: translate(-100%,0px);
+    }
+    .navbar.navbar-default .nav-collapse.in,
+    .navbar.navbar-inverse .nav-collapse.in {
+        transform: translate(0px,0px);
+    }
+    
+    .navbar.navbar-default .nav-collapse.slide-down,
+    .navbar.navbar-inverse .nav-collapse.slide-down {
+        transform: translate(0px,-100%);
+    }
+    .navbar.navbar-default .nav-collapse.in.slide-down,
+    .navbar.navbar-inverse .nav-collapse.in.slide-down {
+        transform: translate(0px,0px);
+    }
+}
+
+
+
+</style>
+<script type="text/javascript">
+  
+
+</script>

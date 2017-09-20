@@ -1,0 +1,24 @@
+{% include 'base.html' %}
+
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script> -->
+{% load static %}
+{% load crispy_forms_tags %}
+
+<link rel="stylesheet" href="{% static 'user/user.css' %}" />
+
+
+
+<!-- {% block title %}Add New Employee{% endblock %} -->
+<body >
+{% block content %}
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title p_header">Add New Employee Details</h3>
+      </div>
+      <div class="panel-body">
+        {% crispy form %}
+      </div>
+    </div>
+{% endblock %}
+</body>

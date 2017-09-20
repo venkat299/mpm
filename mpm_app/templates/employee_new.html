@@ -1,0 +1,88 @@
+{% include 'base.html' %}
+{% load static %}
+
+<!-- <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" /> -->
+
+<script src="{% static 'user/datatable.js' %}"></script>
+<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+ -->
+<link rel="stylesheet" href="{% static 'user/user.css' %}" />
+<!-- {% load django_tables2 crispy_forms_tags %}
+{% load bootstrap3 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %} -->
+
+
+{% block content %}
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+<!--         <h3 class="panel-title">Filter <span> Total Rows: </span></h3>  -->
+<!-- <div class="container"> -->
+  <div class="row">
+    <div class="col-xs-4 bold p_header">Filter</div>
+    <div class="col-xs-8">
+      <div class="row">
+        <div class="col-md-4 col-md-push-8  bold p_header">Total Rows : {{ total_rows }} </div>
+<!--         <div class="col-md-8 col-md-pull-4">Content</div> -->
+      </div>
+    </div>
+  </div>
+<!-- </div> -->
+
+      </div>
+      <div class="panel-body">
+        {% crispy filter.form filter.form.helper %}
+       
+      </div>
+    </div>
+ {% render_table table %}
+
+{% endblock %}
+<style type="text/css">
+/*   th {
+    background: black !important;
+    border-left:0px !important;
+
+  }
+   th > a {
+    color: white !important;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+  }*/
+
+
+</style>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+    $('.fixed_headers').DataTable({
+         paging: false,
+         // scrollY: 400,
+         searching: false,
+         ordering:  false,
+         select: true,
+          fixedHeader: {
+        header: true,
+        footer: true
+    },
+     scroller:    true,
+         fixedColumns: {
+        leftColumns: 2
+    }
+    });
+});
+
+    $(function() {
+        // $('.convert_link').attr( 'next',(location.pathname+location.search));
+        href_var = ($('.convert_link')[0]).href
+        $('.convert_link').attr( 'href',href_var+'?&next='+encodeURIComponent(location.pathname+location.search));
+        //x.href+'?&next='+location.pathname+location.search
+
+        //next={{request.path}}
+        // (location.pathname+location.search).substr(1)
+    });
+
+</script>
+

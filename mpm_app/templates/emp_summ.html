@@ -1,0 +1,44 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+
+
+
+{% include 'base.html' %}
+{% load static %}
+<script src="{% static 'user/datatable.js' %}"></script>
+
+{% load django_tables2 crispy_forms_tags %}
+
+<!-- 
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+ -->
+<link rel="stylesheet" href="{% static 'user/user.css' %}" />
+  <div >
+
+{% render_table table %}    
+</div>
+
+
+
+<style type="text/css">
+
+</style>
+
+<script type="text/javascript">
+
+
+$(document).ready(function(){
+    $('.fixed_headers').DataTable({
+         paging: false,
+         // scrollY: 400,
+          searching: true,
+        ordering:  false,
+     select: true,
+          fixedHeader: {
+        header: true,
+        footer: true
+    },
+     scroller:    true
+    });
+});
+
+</script>
