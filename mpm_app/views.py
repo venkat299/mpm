@@ -6,7 +6,7 @@ from django.views.generic.edit import CreateView, UpdateView
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.query_utils import Q
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_list_or_404, get_object_or_404, render, render_to_response
 from django_tables2 import SingleTableView, RequestConfig
 from dal import autocomplete
@@ -159,6 +159,13 @@ class EmployeeUpdate(GroupRequiredMixin, UpdateView):
         print('success_url='+self.request.GET.get('next'))
         return self.request.GET.get('next') 
 
+    def dispatch(self, request, *args, **kwargs):
+        handler = super(EmployeeUpdate, self).dispatch(request, *args, **kwargs)
+        # Only allow editing if current user is owner
+        # import ipdb; ipdb.set_trace()
+        if self.object.e_unit_roll.u_code[1:3] != request.user.username[0:2] and self.object.e_unit_roll.u_code[1:3]!='99' and request.user.username not in ['iedstaff','iedhq']:
+            return HttpResponseForbidden(u"You dont have permission to edit other Area records.")
+        return handler
 
 
 

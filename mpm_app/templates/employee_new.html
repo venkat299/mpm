@@ -76,8 +76,13 @@ $(document).ready(function(){
 
     $(function() {
         // $('.convert_link').attr( 'next',(location.pathname+location.search));
-        href_var = ($('.convert_link')[0]).href
-        $('.convert_link').attr( 'href',href_var+'?&next='+encodeURIComponent(location.pathname+location.search));
+        // href_var = ($('.convert_link')[0]).href
+        // $('.convert_link').attr( 'href',href_var+'?&next='+encodeURIComponent(location.pathname+location.search));
+
+              $('.convert_link').toArray().forEach(function (item) {
+          console.log(item)
+          item.setAttribute( 'href',item.href+'?&next='+encodeURIComponent(location.pathname+location.search))
+        })
         //x.href+'?&next='+location.pathname+location.search
 
         //next={{request.path}}

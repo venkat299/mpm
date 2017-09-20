@@ -8,7 +8,7 @@ from django import forms
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.forms.widgets import SelectDateWidget
-
+import datetime
 
 from mpm_app.forms.bootstrap import SubmitCancelFormHelper, ModelFormWithHelper
 
@@ -77,19 +77,22 @@ class EmployeeFormHelper(FormHelper):
 class EmpEditForm(forms.ModelForm):
     empty_dt_label = ("Year", "Month", "Day"),
     e_eis = forms.CharField(label = "EIS/NEIS:",disabled=True)
-    # e_name = forms.CharField()
+    e_name = forms.CharField()
     e_regsno = forms.CharField(label = "Unit Roll No:",required=False)
     # e_status = forms.CharField(label = "Service Status:")
     e_termi = forms.ChoiceField(label = "Service Termination Type:",required=False, choices=termination_choices)
     e_join = forms.ChoiceField(label = "Service Join Type:",required=False, choices=appointment_choices)
     e_doj = forms.DateField(label = "Service Join Date:",required=False,
         widget=SelectDateWidget(
+            years=range(1955, datetime.date.today().year),
             empty_label=("Year", "Month", "Day"),
     ),)
     e_dot = forms.DateField(label = "Service Termination Date:", required=False,  widget=SelectDateWidget(
+            years=range(1955, datetime.date.today().year+1),
             empty_label=("Year", "Month", "Day"),
     ),)
     e_dob = forms.DateField(label = "Date of Birth:", widget=SelectDateWidget(
+            years=range(1955, datetime.date.today().year),
             empty_label=("Year", "Month", "Day"),
     ),)
     # e_gender = forms.CharField(label = "Gender:",)
@@ -109,7 +112,8 @@ class EmpEditForm(forms.ModelForm):
  
     def __init__(self, *args, **kwargs):
         super(EmpEditForm, self).__init__(*args, **kwargs)
- 
+        
+        # import ipdb; ipdb.set_trace()
         self.helper = FormHelper()
         self.helper.form_id = 'id_intake_form'
         self.helper.form_method = 'POST'
@@ -137,12 +141,15 @@ class EmpCreateForm(forms.ModelForm):
     e_join = forms.ChoiceField(label = "Service Join Type:",required=False, choices=appointment_choices)
     e_doj = forms.DateField(label = "Service Join Date:",required=False,
         widget=SelectDateWidget(
+            years=range(datetime.date.today().year-65, datetime.date.today().year),
             empty_label=("Year", "Month", "Day"),
     ),)
     e_dot = forms.DateField(label = "Service Termination Date:", required=False,  widget=SelectDateWidget(
+            years=range(datetime.date.today().year-65, datetime.date.today().year+1),
             empty_label=("Year", "Month", "Day"),
     ),)
     e_dob = forms.DateField(label = "Date of Birth:", widget=SelectDateWidget(
+            years=range(datetime.date.today().year-65, datetime.date.today().year),
             empty_label=("Year", "Month", "Day"),
     ),)
     # e_gender = forms.CharField(label = "Gender:",)

@@ -1,9 +1,13 @@
 from django.db import models
 from django.core.urlresolvers import reverse
+from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
 
 class Area(models.Model):
     a_name = models.CharField(max_length=20)
     a_code = models.IntegerField(primary_key=True)
+    def __str__(self):
+        return self.a_name+'__'+str(self.a_code)
 
 
 class Unit(models.Model):
@@ -52,6 +56,22 @@ class Employee(models.Model):
     e_join = models.CharField(verbose_name="Service Join Type",choices=appointment_choices, default="NA", max_length=20)
     e_termi = models.CharField(verbose_name="Service Termination Type",choices=termination_choices, default="NA", max_length=20)
     e_status = models.CharField(verbose_name="Service Status",choices=status_choices, default="In_service", max_length=20)
+
+    def clean(self):
+        # Don't allow draft entries to have a pub_date.
+        if self.e_doj is not None and self.e_dot is not None and self.e_dot < self.e_doj:
+            raise ValidationError(_('Termination Date is earlier than Join Date'))
+
+        if self.e_doj is not None and self.e_dob is not None and self.e_doj < self.e_dob:
+            raise ValidationError(_('Join Date is earlier than Birth Date'))
+
+        if self.e_dot is not None and self.e_dob is not None and self.e_dot < self.e_dob:
+            raise ValidationError(_('Termination Date is earlier than Birth Date'))
+        
+        if self.e_unit_roll is not None and self.e_unit_work is not None and self.e_unit_roll.u_code[1:3] != self.e_unit_work.u_code[1:3]:
+            raise ValidationError(_('Working Unit should match area of On-roll unit'))
+
+        # import ipdb; ipdb.set_trace()
 
 
 # trail_choices = (("Join", "Join"), ("Terminate", "Terminate"), ("Transfer_In", "Transfer_Out"),)

@@ -27,6 +27,16 @@ class EmployeeFilter(FilterSet):
                 },
             }
         }
+    
+    # @classmethod
+    # def filter_for_lookup(cls, f, lookup_type):
+    #     # override date range lookups
+    #     if isinstance(f, models.DateField) and lookup_type == 'range':
+    #         return django_filters.DateRangeFilter, {}
+
+    #     # use default behavior otherwise
+    #     return super(EmployeeFilter, cls).filter_for_lookup(f, lookup_type)
+        
 
 # import itertools
 
@@ -52,7 +62,7 @@ class EmployeeTable(tables.Table):
     # eis = tables.Column(accessor='e_eis')
     regsno = tables.Column(accessor='e_regsno')
     name = tables.Column(accessor='e_name')
-    dob = tables.Column(accessor='e_dob', verbose_name='DOB')
+    dob = tables.DateColumn(accessor='e_dob',short=True, verbose_name='DOB')
     gender = tables.Column(accessor='e_gender')
     dscd = tables.Column(accessor='e_desg.d_code', verbose_name='Desg Code')
     gdesig = tables.Column(accessor='e_desg.d_gdesig', verbose_name='Grp Desig')
@@ -64,9 +74,9 @@ class EmployeeTable(tables.Table):
     unit_roll_code = tables.Column(accessor='e_unit_roll.u_code', verbose_name='On-Roll Unit Code')
     unit_roll = tables.Column(accessor='e_unit_roll.u_name', verbose_name='On-Roll Unit Name')
     unit_work = tables.Column(accessor='e_unit_work.u_name',verbose_name='Working Unit Name')
-    doj = tables.Column(accessor='e_doj', verbose_name='Join Date')
+    doj = tables.DateColumn(accessor='e_doj', verbose_name='Join Date')
     join_type = tables.Column(accessor='e_join', verbose_name='Join. Type')
-    dot = tables.Column(accessor='e_dot',verbose_name='Termination Date')
+    dot = tables.DateColumn(accessor='e_dot',verbose_name='Termination Date')
     termination = tables.Column(accessor='e_termi', verbose_name='Termi. Type')
     status = tables.Column(accessor='e_status')
 

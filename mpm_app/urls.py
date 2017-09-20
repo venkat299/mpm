@@ -12,9 +12,8 @@ urlpatterns = [
     # (r'^one/$', RedirectView.as_view(url='/another/')),
 
     url(r'^emp/create/$', views.CreateEmpView.as_view(),name="emp_create"),
-    url(r'^emp/edit/(?P<pk>\d+)/$', views.EmployeeUpdate.as_view(
-        # success_url = '.'
-        ), name='emp_edit'),
+    url(r'^emp/edit/(?P<pk>\d+)/$', views.EmployeeUpdate.as_view(), name='emp_edit'),
+    url(r'^emp/edit/$', views.EmployeeUpdate.as_view(), name='emp_edit'),
     # url(r'^delete/(?P<pk>\d+)/$', views.bug_delete, name='bug_delete'),
     url(r'^emp/list/$', views.EmployeeListView.as_view(
         model=Employee,
