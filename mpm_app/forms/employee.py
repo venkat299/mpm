@@ -16,9 +16,23 @@ from mpm_app.forms.bootstrap import SubmitCancelFormHelper, ModelFormWithHelper
 
 from mpm_app.models import Employee, Desg, Unit
 
-appointment_choices = (("Land_oustee", "Land_oustee"), ("New_appointee", "New_appointee"), ("NA", "NA"))
-termination_choices = (("Retirement", "Retirement"), ("Death", "Death"),
-                      ("VRS", "VRS"), ("NA", "NA"))
+appointment_choices = (("Land Losers", "Land_Losers"),
+    ("Fresh Recruitment", "Fresh_Recruitment"),
+    ("In lieu of Death", "Death"),
+    ("In lieu of perm Disability", "Disability"),
+    ("Female VRS", "Female_VRS"),
+    ("Reinstt_Rejoin", "Reinstt_Rejoin"),
+    ("Other reason(Inter Co transfer)", "other_tranfer"),
+    ("NA", "NA"))
+termination_choices = (("Retirement", "Retirement"),
+    ("Resignation", "Resignation"),
+    ("Medically Unfit", "Unfit"),
+    ("Death", "Death"),
+    ("Female VRS", "Female_VRS"),
+    ("VRS BPE", "VRS"),
+    ("Dismissal/Termination", "Dismissal"),
+    ("Other reason(Inter Co transfer)", "other_tranfer"),
+    ("NA", "NA"))
 status_choices = (("In_Service", "In_Service"), ("Not_in_service", "Not_in_service"))
 gender_choices = (("Male", "Male"), ("Female", "Female"))
 
