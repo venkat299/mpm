@@ -107,7 +107,7 @@ h1,  {
   margin-left: revert !important;
 }
 
-.nav>li>a:focus, .nav>li>a:hover{
+.nav>li>a:focus, .nav>li>a:hover, .active{
   color: #337ab7 !important;
   background-color: #dd5 !important;
 }

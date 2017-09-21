@@ -68,7 +68,7 @@ class EmployeeTable(tables.Table):
     gdesig = tables.Column(accessor='e_desg.d_gdesig', verbose_name='Grp Desig')
     #desg1 = tables.LinkColumn('e_desg.d_name', args=[A('e_desg.d_name')])
     desg = tables.Column(accessor='e_desg.d_name', verbose_name='Grade Desig')
-    grade = tables.Column(accessor='e_desg.d_grade', verbose_name='Grade')
+    grade = tables.Column(accessor='e_desg.d_grade', verbose_name='Grade/ Category')
     #cadre = tables.Column(accessor='e_unit_roll.u_name')
     discp = tables.Column(accessor='e_desg.d_discp', verbose_name='Discipline')
     unit_roll_code = tables.Column(accessor='e_unit_roll.u_code', verbose_name='On-Roll Unit Code')
@@ -84,7 +84,8 @@ class EmployeeTable(tables.Table):
         model = Employee
         attrs = {"class": "rwd-table"}
         fields = ('eis', 'regsno', 'name', 'dob','gender','dscd','gdesig', 'desg', 'grade','discp','unit_roll_code','unit_roll', 'unit_work', 'doj','join_type', 'dot', 'termination','status')
-        #sequence = ('eis', 'regsno', 'name', 'dob', 'desg', 'unit_roll', 'unit_work', 'doj', 'dot', 'termination','status')
+        sequence = ('eis', 'regsno', 'name', 'dob','gender','dscd', 'desg', 'grade','unit_roll_code','unit_roll', 'unit_work','gdesig','discp', 'doj','join_type', 'dot', 'termination','status')
+        
         #attrs = {"class": "table-striped table-bordered"}
         empty_text = "There are no customers matching the search criteria..."
         # add class="paleblue" to <table> tag
@@ -101,13 +102,42 @@ def suma_footer(table):
 
 class EmpSummAreaTable(tables.Table):
     area_code = tables.LinkColumn('emp_unit_summ', kwargs={'area_code':A('e_unit_roll__u_area__a_code')}, 
-                verbose_name='area code', accessor='e_unit_roll__u_area__a_code', attrs={'class':'edit_link', 'a': {'next':'./', 'class':'convert_link'}})
+                verbose_name='area code', accessor='e_unit_roll__u_area__a_name',footer='Total:', attrs={'class':'edit_link', 'a': {'next':'./', 'class':'convert_link'}})
     # area_code = tables.Column(accessor='e_unit_roll__u_area__a_code')
-    area_name = tables.Column(accessor='e_unit_roll__u_area__a_name', footer='Total:')
+    # area_name = tables.Column(accessor='e_unit_roll__u_area__a_name', footer='Total:')
     total = tables.Column(accessor='tot',footer=suma_footer)
     male = tables.Column(accessor='male', footer=lambda table: sum(x['male'] for x in table.data))
     female = tables.Column(accessor='female', footer=lambda table: sum(x['female'] for x in table.data))
 
+    C6 = tables.Column(accessor='C6', footer=lambda table:sum(x['C6'] for x in table.data),empty_values=(0,))
+    C5 = tables.Column(accessor='C5', footer=lambda table:sum(x['C5'] for x in table.data),empty_values=(0,))
+    C4 = tables.Column(accessor='C4', footer=lambda table:sum(x['C4'] for x in table.data),empty_values=(0,))
+    C3 = tables.Column(accessor='C3', footer=lambda table:sum(x['C3'] for x in table.data),empty_values=(0,))
+    C2 = tables.Column(accessor='C2', footer=lambda table:sum(x['C2'] for x in table.data),empty_values=(0,))
+    C1 = tables.Column(accessor='C1', footer=lambda table:sum(x['C1'] for x in table.data),empty_values=(0,))
+    
+    T1 = tables.Column(accessor='T1', footer=lambda table:sum(x['T1'] for x in table.data),empty_values=(0,))
+    TA = tables.Column(accessor='TA', footer=lambda table:sum(x['TA'] for x in table.data),empty_values=(0,))
+    TB = tables.Column(accessor='TB', footer=lambda table:sum(x['TB'] for x in table.data),empty_values=(0,))
+    TC = tables.Column(accessor='TC', footer=lambda table:sum(x['TC'] for x in table.data),empty_values=(0,))
+    TD = tables.Column(accessor='TD', footer=lambda table:sum(x['TD'] for x in table.data),empty_values=(0,))
+    TE = tables.Column(accessor='TE', footer=lambda table:sum(x['TE'] for x in table.data),empty_values=(0,))
+    TF = tables.Column(accessor='TF', footer=lambda table:sum(x['TF'] for x in table.data),empty_values=(0,))
+    TG = tables.Column(accessor='TG', footer=lambda table:sum(x['TG'] for x in table.data),empty_values=(0,))
+    TH = tables.Column(accessor='TH', footer=lambda table:sum(x['TH'] for x in table.data),empty_values=(0,))
+    GS = tables.Column(accessor='GS', footer=lambda table:sum(x['GS'] for x in table.data),empty_values=(0,))
+    G1 = tables.Column(accessor='G1', footer=lambda table:sum(x['G1'] for x in table.data),empty_values=(0,))
+    G2 = tables.Column(accessor='G2', footer=lambda table:sum(x['G2'] for x in table.data),empty_values=(0,))
+    G3 = tables.Column(accessor='G3', footer=lambda table:sum(x['G3'] for x in table.data),empty_values=(0,))
+    XS = tables.Column(accessor='XS', footer=lambda table:sum(x['XS'] for x in table.data),empty_values=(0,))
+    XA = tables.Column(accessor='XA', footer=lambda table:sum(x['XA'] for x in table.data),empty_values=(0,))
+    XB = tables.Column(accessor='XB', footer=lambda table:sum(x['XB'] for x in table.data),empty_values=(0,))
+    XC = tables.Column(accessor='XC', footer=lambda table:sum(x['XC'] for x in table.data),empty_values=(0,))
+    XD = tables.Column(accessor='XD', footer=lambda table:sum(x['XD'] for x in table.data),empty_values=(0,))
+    XE = tables.Column(accessor='XE', footer=lambda table:sum(x['XE'] for x in table.data),empty_values=(0,))
+    PR = tables.Column(accessor='PR', footer=lambda table:sum(x['PR'] for x in table.data),empty_values=(0,))
+    ZZ = tables.Column(accessor='ZZ', footer=lambda table:sum(x['ZZ'] for x in table.data),empty_values=(0,))
+    
     # suma = tables.Column(footer=suma_footer)
 
 
@@ -125,7 +155,78 @@ class EmpSummUnitTable(tables.Table):
     total = tables.Column(accessor='tot',footer=suma_footer)
     male = tables.Column(accessor='male', footer=lambda table: sum(x['male'] for x in table.data))
     female = tables.Column(accessor='female', footer=lambda table: sum(x['female'] for x in table.data))
+    C6 = tables.Column(accessor='C6', footer=lambda table:sum(x['C6'] for x in table.data),empty_values=(0,))
+    C5 = tables.Column(accessor='C5', footer=lambda table:sum(x['C5'] for x in table.data),empty_values=(0,))
+    C4 = tables.Column(accessor='C4', footer=lambda table:sum(x['C4'] for x in table.data),empty_values=(0,))
+    C3 = tables.Column(accessor='C3', footer=lambda table:sum(x['C3'] for x in table.data),empty_values=(0,))
+    C2 = tables.Column(accessor='C2', footer=lambda table:sum(x['C2'] for x in table.data),empty_values=(0,))
+    C1 = tables.Column(accessor='C1', footer=lambda table:sum(x['C1'] for x in table.data),empty_values=(0,))
+    
+    T1 = tables.Column(accessor='T1', footer=lambda table:sum(x['T1'] for x in table.data),empty_values=(0,))
+    TA = tables.Column(accessor='TA', footer=lambda table:sum(x['TA'] for x in table.data),empty_values=(0,))
+    TB = tables.Column(accessor='TB', footer=lambda table:sum(x['TB'] for x in table.data),empty_values=(0,))
+    TC = tables.Column(accessor='TC', footer=lambda table:sum(x['TC'] for x in table.data),empty_values=(0,))
+    TD = tables.Column(accessor='TD', footer=lambda table:sum(x['TD'] for x in table.data),empty_values=(0,))
+    TE = tables.Column(accessor='TE', footer=lambda table:sum(x['TE'] for x in table.data),empty_values=(0,))
+    TF = tables.Column(accessor='TF', footer=lambda table:sum(x['TF'] for x in table.data),empty_values=(0,))
+    TG = tables.Column(accessor='TG', footer=lambda table:sum(x['TG'] for x in table.data),empty_values=(0,))
+    TH = tables.Column(accessor='TH', footer=lambda table:sum(x['TH'] for x in table.data),empty_values=(0,))
+    GS = tables.Column(accessor='GS', footer=lambda table:sum(x['GS'] for x in table.data),empty_values=(0,))
+    G1 = tables.Column(accessor='G1', footer=lambda table:sum(x['G1'] for x in table.data),empty_values=(0,))
+    G2 = tables.Column(accessor='G2', footer=lambda table:sum(x['G2'] for x in table.data),empty_values=(0,))
+    G3 = tables.Column(accessor='G3', footer=lambda table:sum(x['G3'] for x in table.data),empty_values=(0,))
+    XS = tables.Column(accessor='XS', footer=lambda table:sum(x['XS'] for x in table.data),empty_values=(0,))
+    XA = tables.Column(accessor='XA', footer=lambda table:sum(x['XA'] for x in table.data),empty_values=(0,))
+    XB = tables.Column(accessor='XB', footer=lambda table:sum(x['XB'] for x in table.data),empty_values=(0,))
+    XC = tables.Column(accessor='XC', footer=lambda table:sum(x['XC'] for x in table.data),empty_values=(0,))
+    XD = tables.Column(accessor='XD', footer=lambda table:sum(x['XD'] for x in table.data),empty_values=(0,))
+    XE = tables.Column(accessor='XE', footer=lambda table:sum(x['XE'] for x in table.data),empty_values=(0,))
+    PR = tables.Column(accessor='PR', footer=lambda table:sum(x['PR'] for x in table.data),empty_values=(0,))
+    ZZ = tables.Column(accessor='ZZ', footer=lambda table:sum(x['ZZ'] for x in table.data),empty_values=(0,))
+    
+    def return_url(self, record, column_id):
+        url = reverse('empl_list')
+        return format_html('''<a class="link_col_summ" 
+            href="{}?e_unit_roll__u_code={}
+            &e_status=In_service&e_desg__d_code={}">{}</a>''',
+            url,record['e_unit_roll'],column_id,record[column_id])
+    
+    # def render_desg_code(self, record):
+    #     # print(record)
+    #     url = reverse('empl_list')
+    #     return format_html('<a href="{}?e_desg__d_code={}&e_unit_roll__u_code={}&e_status=In_service">{}</a>', url, record['d5_code'],record['e_unit_roll'],record['d5_code'])
 
+    # def render_male(self, record):
+    #     url = reverse('empl_list')
+    #     return format_html('<a class="link_col_summ" href="{}?e_desg__d_code={}&e_unit_roll__u_code={}&e_status=In_service&e_gender=Male">{}</a>', url, record['d5_code'],record['e_unit_roll'],record['male'])
+        
+    def render_C6(self, record): return self.return_url(record, 'C6' )
+    def render_C5(self, record): return self.return_url(record, 'C5' )
+    def render_C4(self, record): return self.return_url(record, 'C4' )
+    def render_C3(self, record): return self.return_url(record, 'C3' )
+    def render_C2(self, record): return self.return_url(record, 'C2' )
+    def render_C1(self, record): return self.return_url(record, 'C1' )
+    def render_T1(self, record): return self.return_url(record, 'T1' )
+    def render_TA(self, record): return self.return_url(record, 'TA' )
+    def render_TB(self, record): return self.return_url(record, 'TB' )
+    def render_TC(self, record): return self.return_url(record, 'TC' )
+    def render_TD(self, record): return self.return_url(record, 'TD' )
+    def render_TE(self, record): return self.return_url(record, 'TE' )
+    def render_TF(self, record): return self.return_url(record, 'TF' )
+    def render_TG(self, record): return self.return_url(record, 'TG' )
+    def render_TH(self, record): return self.return_url(record, 'TH' )
+    def render_GS(self, record): return self.return_url(record, 'GS' )
+    def render_G1(self, record): return self.return_url(record, 'G1' )
+    def render_G2(self, record): return self.return_url(record, 'G2' )
+    def render_G3(self, record): return self.return_url(record, 'G3' )
+    def render_XS(self, record): return self.return_url(record, 'XS' )
+    def render_XA(self, record): return self.return_url(record, 'XA' )
+    def render_XB(self, record): return self.return_url(record, 'XB' )
+    def render_XC(self, record): return self.return_url(record, 'XC' )
+    def render_XD(self, record): return self.return_url(record, 'XD' )
+    def render_XE(self, record): return self.return_url(record, 'XE' )
+    def render_PR(self, record): return self.return_url(record, 'PR' )
+    def render_ZZ(self, record): return self.return_url(record, 'ZZ' )
     # suma = tables.Column(footer=suma_footer)
     class Meta:
         attrs = {"class": "fixed_headers rwd-table", id:"my_table"}

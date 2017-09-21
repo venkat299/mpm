@@ -35,30 +35,30 @@ class Desg(models.Model):
         return self.d_code+'__'+self.d_name
         # return self.d_code+'__'+self.d_discp+'__'+self.d_name + '__'+ self.d_grade
 
-appointment_choices = (("Land Losers", "Land_Losers"),
+appointment_choices = (("NA", "NA"),
+    ("Land Losers", "Land_Losers"),
     ("Fresh Recruitment", "Fresh_Recruitment"),
     ("In lieu of Death", "Death"),
     ("In lieu of perm Disability", "Disability"),
     ("Female VRS", "Female_VRS"),
     ("Reinstt_Rejoin", "Reinstt_Rejoin"),
-    ("Other reason(Inter Co transfer)", "other_tranfer"),
-    ("NA", "NA"))
-termination_choices = (("Retirement", "Retirement"),
+    ("Other reason(Inter Co transfer)", "other_tranfer"))
+termination_choices = (("NA", "NA"),
+    ("Retirement", "Retirement"),
     ("Resignation", "Resignation"),
     ("Medically Unfit", "Unfit"),
     ("Death", "Death"),
     ("Female VRS", "Female_VRS"),
     ("VRS BPE", "VRS"),
     ("Dismissal/Termination", "Dismissal"),
-    ("Other reason(Inter Co transfer)", "other_tranfer"),
-    ("NA", "NA"))
+    ("Other reason(Inter Co transfer)", "other_tranfer"))
 status_choices = (("In_service", "In_service"), ("Not_in_service", "Not_in_service"))
 gender_choices = (("Male", "Male"), ("Female", "Female"))
 
 class Employee(models.Model):
 
     e_eis = models.CharField(verbose_name="EIS No",max_length=15, primary_key=True)
-    e_regsno = models.CharField(verbose_name="Unit Roll No",max_length=15, null=True,  blank=True)
+    e_regsno = models.CharField(verbose_name="Token No",max_length=15, null=True,  blank=True)
     e_name = models.CharField(verbose_name = "Full Name",max_length=40)
     e_dob = models.DateField(verbose_name="Date of Birth", blank=True)
     e_gender = models.CharField(verbose_name="Gender",choices=gender_choices, default="Male", max_length=10)

@@ -1,4 +1,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/floatthead/2.0.3/jquery.floatThead.js"></script>
+
 {% load static %}
 {% include 'bootstrap.html' %}
 <!DOCTYPE html>
@@ -17,21 +19,29 @@
     
   </head>
   <body >
-  <div class="container-fluid">
+<!--   <div class="container-fluid">
     <div>
-
+ -->
 
     <nav class="rwd-table">
       <div class="container pg_header_row">
       <div class="navbar-header">
+        <ul class="tab-menu nav navbar-nav navbar-left">
+    <li class=""><a class="hlink {% if active_tab == 'tab1' %} active{% endif %}" href="{% url 'emp_area_summ' %}">Summary</a></li>
+    <li class=""><a class="hlink {% if active_tab == 'tab2' %} active{% endif %}" href="{% url 'empl_list' %}">Search/ Edit</a></li>
+    <li class=""><a class="hlink {% if active_tab == 'tab3' %} active{% endif %}" href="{% url 'emp_create' %}">Add New</a></li>
+    <li class=""><a class="hlink {% if active_tab == 'tab4' %} active{% endif %}" href="{% url 'logout' %}">Logout</a></li>
+</ul>
+
+<!-- 
       <ul class="nav navbar-nav navbar-left">
-        <li {% if request.path == 'emp_area_summ' %} class="button"{% endif %}><a  class ='hlink' href="{% url 'emp_area_summ' %}">Home</a></li>
+        <li {% if request.path == url %} class="button"{% endif %}><a  class ='hlink' href="{% url 'emp_area_summ' %}">Home</a></li>
 
         <li{% if request.path == 'empl_list' %} class="active"{% endif %}><a  class ='hlink' href="{% url 'empl_list' %}">Employee List</a></li>
 
         <li{% if request.path == 'emp_create' %} class="active"{% endif %}><a   class ='hlink' href="{% url 'emp_create' %}">Create</a></li>
 
-        <li{% if request.path == '' %} class="active"{% endif %}><a   class ='hlink' href="{% url 'logout' %}">Logout</a></li>
+        <li{% if request.path == '' %} class="active"{% endif %}><a   class ='hlink' href="{% url 'logout' %}">Logout</a></li> -->
 
       </ul>
     </div>

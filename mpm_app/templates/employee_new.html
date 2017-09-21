@@ -1,4 +1,4 @@
-{% include 'base.html' %}
+{% include 'base.html' with active_tab='tab2' %}
 {% load static %}
 
 <!-- <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" /> -->
@@ -35,8 +35,17 @@
         {% crispy filter.form filter.form.helper %}
        
       </div>
+    </div >
+    {% for format in table.export_formats %}
+    <a href="{% querystring '_export'=format %}">
+        download  <code>.{{ format }}</code>
+    </a>
+{% endfor %}
+    <div class=".wrapper">
+       {% render_table table %}
+
     </div>
- {% render_table table %}
+
 
 {% endblock %}
 <style type="text/css">
@@ -87,7 +96,18 @@ $(document).ready(function(){
 
         //next={{request.path}}
         // (location.pathname+location.search).substr(1)
+
     });
+
+    $(document).ready(function(){
+var $table = $('table');
+$table.floatThead({
+    scrollContainer: function($table){
+        return $table.closest('.wrapper');
+    },
+    position: 'absolute'
+});
+})
 
 </script>
 

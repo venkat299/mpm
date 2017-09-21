@@ -2,7 +2,7 @@
 
 
 
-{% include 'base.html' %}
+{% include 'base.html' with active_tab='tab1' %}
 {% load static %}
 <script src="{% static 'user/datatable.js' %}"></script>
 
@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
  -->
 <link rel="stylesheet" href="{% static 'user/user.css' %}" />
-  <div >
+  <div class=".wrapper">
 
 {% render_table table %}    
 </div>
@@ -27,18 +27,14 @@
 
 
 $(document).ready(function(){
-    $('.fixed_headers').DataTable({
-         paging: false,
-         // scrollY: 400,
-          searching: true,
-        ordering:  false,
-     select: true,
-          fixedHeader: {
-        header: true,
-        footer: true
+var $table = $('table');
+$table.floatThead({
+    scrollContainer: function($table){
+        return $table.closest('.wrapper');
     },
-     scroller:    true
-    });
+    position: 'absolute'
 });
+})
+
 
 </script>

@@ -16,23 +16,22 @@ from mpm_app.forms.bootstrap import SubmitCancelFormHelper, ModelFormWithHelper
 
 from mpm_app.models import Employee, Desg, Unit
 
-appointment_choices = (("Land Losers", "Land_Losers"),
+appointment_choices = ( ("NA", "NA"),("Land Losers", "Land_Losers"),
     ("Fresh Recruitment", "Fresh_Recruitment"),
     ("In lieu of Death", "Death"),
     ("In lieu of perm Disability", "Disability"),
     ("Female VRS", "Female_VRS"),
     ("Reinstt_Rejoin", "Reinstt_Rejoin"),
     ("Other reason(Inter Co transfer)", "other_tranfer"),
-    ("NA", "NA"))
-termination_choices = (("Retirement", "Retirement"),
+   )
+termination_choices = ( ("NA", "NA"),("Retirement", "Retirement"),
     ("Resignation", "Resignation"),
     ("Medically Unfit", "Unfit"),
     ("Death", "Death"),
     ("Female VRS", "Female_VRS"),
     ("VRS BPE", "VRS"),
     ("Dismissal/Termination", "Dismissal"),
-    ("Other reason(Inter Co transfer)", "other_tranfer"),
-    ("NA", "NA"))
+    ("Other reason(Inter Co transfer)", "other_tranfer"))
 status_choices = (("In_Service", "In_Service"), ("Not_in_service", "Not_in_service"))
 gender_choices = (("Male", "Male"), ("Female", "Female"))
 
@@ -89,21 +88,29 @@ class EmployeeFormHelper(FormHelper):
             #     Div(Submit('submit', 'Apply Filter'), css_class='col-md-12'), css_class='row'
             # )
         )
+class MySelectDateWidget(SelectDateWidget):
+
+    def create_select(self, *args, **kwargs):
+        old_state = self.is_required
+        self.is_required = False
+        result = super(MySelectDateWidget, self).create_select(*args, **kwargs)
+        self.is_required = old_state
+        return result
 
 class EmpEditForm(forms.ModelForm):
     empty_dt_label = ("Year", "Month", "Day"),
     e_eis = forms.CharField(label = "EIS/NEIS:",disabled=True)
     e_name = forms.CharField()
-    e_regsno = forms.CharField(label = "Unit Roll No:",required=False)
+    e_regsno = forms.CharField(label = "Token no:",required=False)
     # e_status = forms.CharField(label = "Service Status:")
     e_termi = forms.ChoiceField(label = "Service Termination Type:",required=False, choices=termination_choices)
     e_join = forms.ChoiceField(label = "Service Join Type:",required=False, choices=appointment_choices)
     e_doj = forms.DateField(label = "Service Join Date:",required=False,
-        widget=SelectDateWidget(
+        widget=MySelectDateWidget(
             years=range(1955, datetime.date.today().year),
             empty_label=("Year", "Month", "Day"),
     ),)
-    e_dot = forms.DateField(label = "Service Termination Date:", required=False,  widget=SelectDateWidget(
+    e_dot = forms.DateField(label = "Service Termination Date:", required=False,  widget=MySelectDateWidget(
             years=range(1955, datetime.date.today().year+1),
             empty_label=("Year", "Month", "Day"),
     ),)
@@ -151,20 +158,20 @@ class EmpCreateForm(forms.ModelForm):
     empty_dt_label = ("Year", "Month", "Day"),
     e_eis = forms.CharField(label = "EIS/NEIS:",)
     # e_name = forms.CharField()
-    e_regsno = forms.CharField(label = "Unit Roll No:",required=False)
+    e_regsno = forms.CharField(label = "Token no:",required=False)
     # e_status = forms.CharField(label = "Service Status:")
     e_termi = forms.ChoiceField(label = "Service Termination Type:",required=False, choices=termination_choices)
     e_join = forms.ChoiceField(label = "Service Join Type:",required=False, choices=appointment_choices)
     e_doj = forms.DateField(label = "Service Join Date:",required=False,
-        widget=SelectDateWidget(
+        widget=MySelectDateWidget(
             years=range(datetime.date.today().year-65, datetime.date.today().year),
             empty_label=("Year", "Month", "Day"),
     ),)
-    e_dot = forms.DateField(label = "Service Termination Date:", required=False,  widget=SelectDateWidget(
+    e_dot = forms.DateField(label = "Service Termination Date:", required=False,  widget=MySelectDateWidget(
             years=range(datetime.date.today().year-65, datetime.date.today().year+1),
             empty_label=("Year", "Month", "Day"),
     ),)
-    e_dob = forms.DateField(label = "Date of Birth:", widget=SelectDateWidget(
+    e_dob = forms.DateField(label = "Date of Birth:", widget=MySelectDateWidget(
             years=range(datetime.date.today().year-65, datetime.date.today().year),
             empty_label=("Year", "Month", "Day"),
     ),)
