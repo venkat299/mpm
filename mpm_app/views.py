@@ -182,10 +182,10 @@ class DesgAutocomplete(autocomplete.Select2QuerySetView):
         if not self.request.user.is_authenticated():
             return Desg.objects.none()
 
-        qs = Desg.objects.all()
+        qs = Desg.objects.order_by('d_discp','d_gdesig','d_rank').all()
 
         if self.q:
-            qs = qs.filter(d_gdesig__icontains=self.q)
+            qs = qs.filter(d_code__icontains=self.q)
 
         return qs
 
