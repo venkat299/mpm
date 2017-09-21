@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 class Area(models.Model):
     a_name = models.CharField(max_length=20)
     a_code = models.IntegerField(primary_key=True)
+    a_abbr = models.CharField(max_length=4,default='',null=True)
     def __str__(self):
         return self.a_name+'__'+str(self.a_code)
 
@@ -18,7 +19,7 @@ class Unit(models.Model):
     u_code = models.CharField(max_length=7,primary_key=True)
     u_status = models.CharField(max_length=20, null=True)
     def __str__(self):
-        return self.u_area.a_name+'__'+self.u_name
+        return self.u_area.a_abbr+'__'+self.u_code+'__'+self.u_name
 
 class Desg(models.Model):
     cadre_choices = (("CD", "CD"), ("XCD", "XCD"))
@@ -48,8 +49,8 @@ class Employee(models.Model):
     e_dob = models.DateField(verbose_name="Date of Birth", blank=True)
     e_gender = models.CharField(verbose_name="Gender",choices=gender_choices, default="Male", max_length=10)
     e_desg = models.ForeignKey(Desg,verbose_name="Designation",related_name='desg_code', on_delete=models.CASCADE)
-    e_unit_roll = models.ForeignKey(Unit,verbose_name="On-Roll Unit", on_delete=models.CASCADE, related_name='onroll_unit')
-    e_unit_work = models.ForeignKey(Unit,verbose_name="Working Unit", on_delete=models.CASCADE, related_name='working_unit')
+    e_unit_roll = models.ForeignKey(Unit,verbose_name="On-Roll Unit", on_delete=models.CASCADE, related_name='e_unit_roll')
+    e_unit_work = models.ForeignKey(Unit,verbose_name="Working Unit", on_delete=models.CASCADE, related_name='e_unit_work')
 
     e_doj  = models.DateField(verbose_name="Service Join Date",null=True, blank=True)
     e_dot  = models.DateField(verbose_name="Service Termination Date",null=True,  blank=True)
@@ -58,7 +59,6 @@ class Employee(models.Model):
     e_status = models.CharField(verbose_name="Service Status",choices=status_choices, default="In_service", max_length=20)
 
     def clean(self):
-        # Don't allow draft entries to have a pub_date.
         if self.e_doj is not None and self.e_dot is not None and self.e_dot < self.e_doj:
             raise ValidationError(_('Termination Date is earlier than Join Date'))
 
@@ -68,7 +68,8 @@ class Employee(models.Model):
         if self.e_dot is not None and self.e_dob is not None and self.e_dot < self.e_dob:
             raise ValidationError(_('Termination Date is earlier than Birth Date'))
         
-        if self.e_unit_roll is not None and self.e_unit_work is not None and self.e_unit_roll.u_code[1:3] != self.e_unit_work.u_code[1:3]:
+        # import ipdb; ipdb.set_trace()
+        if self.e_unit_roll_id is not None and self.e_unit_work_id is not None and self.e_unit_roll.u_code[1:3] != self.e_unit_work.u_code[1:3]:
             raise ValidationError(_('Working Unit should match area of On-roll unit'))
 
         # import ipdb; ipdb.set_trace()

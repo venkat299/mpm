@@ -148,6 +148,13 @@ class CreateEmpView(GroupRequiredMixin, CreateView):
     group_required = u'area_apms'
     success_url = '.'
 
+    def get_form_kwargs(self):
+        kw = super(CreateEmpView, self).get_form_kwargs()
+        kw['req_username'] = self.request.user.username # the trick!
+        return kw
+
+
+
 class EmployeeUpdate(GroupRequiredMixin, UpdateView):
     model = Employee
     # fields = '__all__'
@@ -188,9 +195,9 @@ class UnitAutocomplete(autocomplete.Select2QuerySetView):
         if not self.request.user.is_authenticated():
             return Unit.objects.none()
 
-        qs = Unit.objects.all()
+        qs = Unit.objects.filter(u_status__isnull=True).order_by('u_area','u_type','u_name').all()
 
         if self.q:
-            qs = qs.filter(u_name__icontains=self.q)
+            qs = qs.filter(u_code__icontains=self.q)
 
         return qs

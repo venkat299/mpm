@@ -8,6 +8,8 @@ from django import forms
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.forms.widgets import SelectDateWidget
+from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
 import datetime
 
 from mpm_app.forms.bootstrap import SubmitCancelFormHelper, ModelFormWithHelper
@@ -98,11 +100,11 @@ class EmpEditForm(forms.ModelForm):
     # e_gender = forms.CharField(label = "Gender:",)
     form_action = './?next={{ redirect_to }}'
     e_desg =  forms.ModelChoiceField(label = "Designation:", queryset=Desg.objects.all().order_by('d_discp','d_gdesig','d_rank'),widget=autocomplete.ModelSelect2(url='desg-autocomplete'))
-    e_unit_roll =  forms.ModelChoiceField(label = "On-Roll Unit:", queryset=Unit.objects.filter(u_status__isnull=True).order_by('u_area','u_type','u_name'),
+    e_unit_roll = forms.ModelChoiceField(label = "On-Roll Unit:", queryset=Unit.objects.filter(u_status__isnull=True).order_by('u_area','u_type','u_name'),
         widget=autocomplete.ModelSelect2(url='unit-autocomplete',
             # attrs={'data-minimum-input-length': 3,}
             ))
-    e_unit_work =  forms.ModelChoiceField(label = "Working Unit:", queryset=Unit.objects.filter(u_status__isnull=True).order_by('u_area','u_type','u_name'),widget=autocomplete.ModelSelect2(url='unit-autocomplete'))
+    e_unit_work = forms.ModelChoiceField(label = "Working Unit:", queryset=Unit.objects.filter(u_status__isnull=True).order_by('u_area','u_type','u_name'),widget=autocomplete.ModelSelect2(url='unit-autocomplete'))
     
     class Meta:
         model = Employee
@@ -155,21 +157,26 @@ class EmpCreateForm(forms.ModelForm):
     # e_gender = forms.CharField(label = "Gender:",)
 
     e_desg =  forms.ModelChoiceField(label = "Designation:", queryset=Desg.objects.all().order_by('d_discp','d_gdesig','d_rank'),widget=autocomplete.ModelSelect2(url='desg-autocomplete'))
-    e_unit_roll =  forms.ModelChoiceField(label = "On-Roll Unit:", queryset=Unit.objects.filter(u_status__isnull=True).order_by('u_area','u_type','u_name'),
-        widget=autocomplete.ModelSelect2(url='unit-autocomplete',
-            # attrs={'data-minimum-input-length': 3,}
-            ))
+
     e_unit_work =  forms.ModelChoiceField(label = "Working Unit:", queryset=Unit.objects.filter(u_status__isnull=True).order_by('u_area','u_type','u_name'),widget=autocomplete.ModelSelect2(url='unit-autocomplete'))
+    e_unit_roll =  forms.ModelChoiceField(label = "On-Roll Unit:", queryset=Unit.objects.filter(u_status__isnull=True).order_by('u_area','u_type','u_name'),widget=autocomplete.ModelSelect2(url='unit-autocomplete'))
     
     class Meta:
         model = Employee
         fields = ['e_eis', 'e_name', 'e_regsno',  'e_status', 'e_termi',
             'e_gender','e_desg','e_unit_roll','e_unit_work','e_doj',
             'e_dot','e_join','e_dob','e_gender']
- 
+
+    def clean(self):
+        cleaned_data = super(EmpCreateForm, self).clean()
+        if cleaned_data.get("e_unit_roll"):
+            e_unit_roll = cleaned_data.get("e_unit_roll").u_code
+            if e_unit_roll[1:3] != self.req_username[0:2] and e_unit_roll[1:3]!='99' and self.req_username not in ['iedstaff','iedhq']:
+                raise ValidationError("You dont have permission to edit other Area records.")
+        
     def __init__(self, *args, **kwargs):
+        self.req_username = kwargs.pop('req_username', None)
         super(EmpCreateForm, self).__init__(*args, **kwargs)
- 
         self.helper = FormHelper()
         self.helper.form_id = 'id_intake_form'
         self.helper.form_method = 'POST'
