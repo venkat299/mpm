@@ -71,6 +71,7 @@ class Employee(models.Model):
     e_join = models.CharField(verbose_name="Service Join Type",choices=appointment_choices, default="NA", max_length=20)
     e_termi = models.CharField(verbose_name="Service Termination Type",choices=termination_choices, default="NA", max_length=20)
     e_status = models.CharField(verbose_name="Service Status",choices=status_choices, default="In_service", max_length=20)
+    e_dop  = models.DateField(verbose_name="Last promo. Date",null=True, blank=True) # date of last promotion
 
     def clean(self):
         if self.e_doj is not None and self.e_dot is not None and self.e_dot < self.e_doj:

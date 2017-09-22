@@ -78,10 +78,10 @@ class EmployeeFormHelper(FormHelper):
             ),
             Div(
                 Div('e_status' , css_class='col-md-3'),
-                Div('e_dob' , css_class='col-md-3'),
+                # Div('e_dob' , css_class='col-md-3'),
                 Div('e_join' , css_class='col-md-3'),
-                Div('e_termi' , css_class='col-md-2'),
-                Div(Submit('submit', 'Apply Filter'), css_class='col-md-1'), css_class='row'
+                Div('e_termi' , css_class='col-md-3'),
+                Div(Submit('submit', 'Apply Filter'), css_class='col-md-3'), css_class='row'
             ),
 
             # Div(
@@ -120,12 +120,15 @@ class EmpEditForm(forms.ModelForm):
     ),)
     # e_gender = forms.CharField(label = "Gender:",)
     form_action = './?next={{ redirect_to }}'
-    e_desg =  forms.ModelChoiceField(label = "Designation:", queryset=Desg.objects.all().order_by('d_discp','d_gdesig','d_rank'),widget=autocomplete.ModelSelect2(url='desg-autocomplete'))
+    e_desg =  forms.ModelChoiceField(label = "Designation:", queryset=Desg.objects.all().order_by('d_discp','d_gdesig','d_rank'),
+        # widget=autocomplete.ModelSelect2(url='desg-autocomplete')
+        )
     e_unit_roll = forms.ModelChoiceField(label = "On-Roll Unit:", queryset=Unit.objects.filter(u_status__isnull=True).order_by('u_area','u_type','u_name'),
-        widget=autocomplete.ModelSelect2(url='unit-autocomplete',
-            # attrs={'data-minimum-input-length': 3,}
-            ))
-    e_unit_work = forms.ModelChoiceField(label = "Working Unit:", queryset=Unit.objects.filter(u_status__isnull=True).order_by('u_area','u_type','u_name'),widget=autocomplete.ModelSelect2(url='unit-autocomplete'))
+        # widget=autocomplete.ModelSelect2(url='unit-autocomplete',attrs={'data-minimum-input-length': 3,})
+        )
+    e_unit_work = forms.ModelChoiceField(label = "Working Unit:", queryset=Unit.objects.filter(u_status__isnull=True).order_by('u_area','u_type','u_name'),
+        widget=autocomplete.ModelSelect2(url='unit-autocomplete')
+        )
     
     class Meta:
         model = Employee
@@ -177,11 +180,15 @@ class EmpCreateForm(forms.ModelForm):
     ),)
     # e_gender = forms.CharField(label = "Gender:",)
 
-    e_desg =  forms.ModelChoiceField(label = "Designation:", queryset=Desg.objects.all().order_by('d_discp','d_gdesig','d_rank'),widget=autocomplete.ModelSelect2(url='desg-autocomplete'))
-
-    e_unit_work =  forms.ModelChoiceField(label = "Working Unit:", queryset=Unit.objects.filter(u_status__isnull=True).order_by('u_area','u_type','u_name'),widget=autocomplete.ModelSelect2(url='unit-autocomplete'))
-    e_unit_roll =  forms.ModelChoiceField(label = "On-Roll Unit:", queryset=Unit.objects.filter(u_status__isnull=True).order_by('u_area','u_type','u_name'),widget=autocomplete.ModelSelect2(url='unit-autocomplete'))
-    
+    e_desg =  forms.ModelChoiceField(label = "Designation:", queryset=Desg.objects.all().order_by('d_discp','d_gdesig','d_rank'),
+        # widget=autocomplete.ModelSelect2(url='desg-autocomplete')
+        )
+    e_unit_roll = forms.ModelChoiceField(label = "On-Roll Unit:", queryset=Unit.objects.filter(u_status__isnull=True).order_by('u_area','u_type','u_name'),
+        # widget=autocomplete.ModelSelect2(url='unit-autocomplete',attrs={'data-minimum-input-length': 3,})
+        )
+    e_unit_work = forms.ModelChoiceField(label = "Working Unit:", queryset=Unit.objects.filter(u_status__isnull=True).order_by('u_area','u_type','u_name'),
+        # widget=autocomplete.ModelSelect2(url='unit-autocomplete')
+        )
     class Meta:
         model = Employee
         fields = ['e_eis', 'e_name', 'e_regsno',  'e_status', 'e_termi',

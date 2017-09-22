@@ -89,7 +89,7 @@ $(document).ready(function(){
         // $('.convert_link').attr( 'href',href_var+'?&next='+encodeURIComponent(location.pathname+location.search));
 
               $('.convert_link').toArray().forEach(function (item) {
-          console.log(item)
+          //console.log(item)
           item.setAttribute( 'href',item.href+'?&next='+encodeURIComponent(location.pathname+location.search))
         })
         //x.href+'?&next='+location.pathname+location.search
@@ -107,7 +107,18 @@ $table.floatThead({
     },
     position: 'absolute'
 });
+
+
 })
+
+
+
+// $(function() {
+//     $('#id_e_unit_roll').select2();
+//     $('#id_e_unit_work').select2();
+//     $('#id_e_desg').select2();
+// });
+
 
 </script>
 

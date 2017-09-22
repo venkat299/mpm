@@ -3,9 +3,7 @@
 {% load crispy_forms_tags %}
 
 <link rel="stylesheet" href="{% static 'user/user.css' %}" />
-
-
-
+<link rel="stylesheet" href="{% static 'selectize/dist/css/selectize.css' %}" />
 
 
 {% block content %}
@@ -18,3 +16,12 @@
       </div>
     </div>
 {% endblock %}
+
+
+<script>
+$(function() {
+    $('#id_e_unit_roll').select2();
+     $('#id_e_unit_work').select2();
+      $('#id_e_desg').select2();
+});
+</script>

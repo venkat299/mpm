@@ -97,7 +97,8 @@ h1,  {
   color: #fff !important;
 }
 .convert_link, .desg_code a, .link_col_summ{
-  color: #6cf25d !important;
+  /*color: #6cf25d !important;*/
+  color:#6dff05 !important;
 }
 .requiredField{
   color:  #337ab7 !important;
@@ -112,7 +113,7 @@ h1,  {
   background-color: #dd5 !important;
 }
 
-.alert-error{
+.alert-error, .help-inline{
   color: red !important;
   background-color: #dd5 !important;
 
