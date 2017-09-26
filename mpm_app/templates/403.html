@@ -7,9 +7,9 @@
   
   
   
-      <style>
-      /* NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inlined if they are on local disk! */
-      @import url(https://fonts.googleapis.com/css?family=Exo:100,200,400);
+<style>
+/* NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inlined if they are on local disk! */
+@import url(https://fonts.googleapis.com/css?family=Exo:100,200,400);
 @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:700,400,300);
 
 body{
@@ -52,7 +52,7 @@ body{
 .header{
   position: absolute;
   top: calc(50% - 35px);
-  left: calc(50% - 255px);
+  left: calc(25%);
   z-index: 2;
 }
 
@@ -156,79 +156,40 @@ body{
 
 </head>
 
-<body id="backgroundfunction PullBackground() {
-    var ajaxRequest = new XMLHttpRequest(), background = ''; 
-    ajaxRequest.open('POST', "http://www.bing.com/HPImageArchive.aspx?format=xml&idx=0&n=1&mkt=en-US", true);
-    ajaxRequest.setRequestHeader("Connection", "close");
-    ajaxRequest.send('');
-    ajaxRequest.onreadystatechange = function () {
-        if (ajaxRequest.readyState == 4) {
-            background = ajaxRequest.responseText;
-            var res = background.split("<url>"); 
-            var res1 = res[1].split("</url>");
-            background = res1[0];
+<body id="background">
 
-            document.getElementById('NameOfTheDivToChange').style.backgroundImage = "url('http://bing.com" + background + "')"
-            document.getElementById('NameOfTheDivToChange').style.backgroundSize = "100%";
-        }
-    }
-}">
-{% if next %}
-<form  action="/login/?next={{next}}" method="post" >
-{%else%}
-<form   action="/login/" method="post" >
-{% endif %}
-  {% csrf_token %}
+
+
   <div class="body"></div>
     <div class="grad"></div>
     <div class="header">
-      <div>WCL<span>IED</span></div>
+      <div>You dont have permission to edit other Area records.<!-- <span>IED</span> --></div>
     </div>
     <br>
-    <div class="login">
-
-    <input class="form-control" id="id_username" maxlength="30" name="username" type="text" placeholder="username"  required /><br>
-
-    <input class="form-control" id="id_password" maxlength="30" name="password" type="password" placeholder="password"  required /><br>
-       
-  <input type="submit" value="Login"> <br>
-
-
-       <!--  <input type="text" placeholder="username" name="user"><br>
-        <input type="password" placeholder="password" name="password"><br>
-        -->
-      
-    </div>
+  
   <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-
-    </form>
 </body>
 </html>
-
 <script type="text/javascript">
-  function GetImageURL(ans) {
-    var suffix = ans.images[0].url 
-    document.getElementById("background").style.backgroundImage = 'url("' + 
-    'http://bing.com/' + suffix + '"'
-}
+//   (function PullBackground() {
+//     var ajaxRequest = new XMLHttpRequest(), background = ''; 
+//     ajaxRequest.open('POST', "http://www.bing.com/HPImageArchive.aspx?format=xml&idx=0&n=1&mkt=en-US", true);
+//     ajaxRequest.setRequestHeader("Connection", "close");
+//     ajaxRequest.send('');
+//     ajaxRequest.onreadystatechange = function () {
+//         if (ajaxRequest.readyState == 4) {
+//             background = ajaxRequest.responseText;
+//             var res = background.split("<url>"); 
+//             var res1 = res[1].split("</url>");
+//             background = res1[0];
 
-function GetJSON() {
-    var xmlhttp = new XMLHttpRequest()
-    var url = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1"
+//             document.getElementById('background').style.backgroundImage = "url('http://bing.com" + background + "')"
+//             document.getElementById('background').style.backgroundSize = "100%";
+//         }
+//     }
+// })()
 
-    xmlhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            var ans = JSON.parse(this.responseText);
-            GetImageURL(ans);
-        }
-    };
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-}
-
-
-window.onload= function () {
-    GetJSON()
-}
 </script>
+
+
 

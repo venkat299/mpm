@@ -2,7 +2,7 @@
 
 
 
-{% include 'base.html' with active_tab='tab1' %}
+{% include 'base.html' with active_tab='tab5' %}
 {% load static %}
 <script src="{% static 'user/datatable.js' %}"></script>
 
@@ -12,11 +12,17 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
  -->
 <link rel="stylesheet" href="{% static 'user/user.css' %}" />
+ Addition 
   <div class=".wrapper">
 
-{% render_table table %}    
+{% render_table table1 %}    
 </div>
 
+
+Reduction
+  <div class=".wrapper">
+{% render_table table2 %}    
+</div>
 
 
 <style type="text/css">
@@ -32,7 +38,7 @@ $table.floatThead({
     scrollContainer: function($table){
         return $table.closest('.wrapper');
     },
-    position: 'absolute',
+    position: 'absolute'
 });
 })
 

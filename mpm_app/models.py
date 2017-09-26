@@ -27,6 +27,7 @@ class Desg(models.Model):
     d_name = models.CharField(max_length=40)
     d_grade = models.CharField(max_length=10)
     d_gdesig = models.CharField(max_length=40)
+    d_gcode = models.CharField(max_length=5)
     d_rank = models.IntegerField()
     d_cadre = models.CharField(choices=cadre_choices, default="CD", max_length=10)
     d_discp = models.CharField(verbose_name="Discpline", max_length=20)
@@ -35,23 +36,23 @@ class Desg(models.Model):
         return self.d_code+'__'+self.d_name
         # return self.d_code+'__'+self.d_discp+'__'+self.d_name + '__'+ self.d_grade
 
-appointment_choices = (("NA", "NA"),
-    ("Land Losers", "Land_Losers"),
-    ("Fresh Recruitment", "Fresh_Recruitment"),
-    ("In lieu of Death", "Death"),
-    ("In lieu of perm Disability", "Disability"),
-    ("Female VRS", "Female_VRS"),
-    ("Reinstt_Rejoin", "Reinstt_Rejoin"),
-    ("Other reason(Inter Co transfer)", "other_tranfer"))
-termination_choices = (("NA", "NA"),
-    ("Retirement", "Retirement"),
-    ("Resignation", "Resignation"),
-    ("Medically Unfit", "Unfit"),
-    ("Death", "Death"),
-    ("Female VRS", "Female_VRS"),
-    ("VRS BPE", "VRS"),
-    ("Dismissal/Termination", "Dismissal"),
-    ("Other reason(Inter Co transfer)", "other_tranfer"))
+appointment_choices = (("A_NA", "NA"),
+    ("A_Land_Losers","Appt of Land Losers"),
+    ("A_Fresh_Recruitment", "Fresh Recruitment"),
+    ("A_Death", "In lieu of Death"),
+    ("A_Disability","In lieu of perm Disability"),
+    ("A_Female_VRS", "Female VRS"),
+    ("A_Reinstt_Rejoin", "Reinstt/Rejoin"),
+    ("A_Other_tranfer", "Other reason(Inter Co transfer)"))
+termination_choices = (("T_NA", "NA"),
+    ("T_Retirement", "Retirement"),
+    ("T_Resignation","Resignation"),
+    ("T_Unfit", "Medically Unfit"),
+    ("T_Death", "Death"),
+    ("T_Female_VRS", "Female VRS"),
+    ("T_VRS_BPE", "VRS BPE"),
+    ("T_Dismissal", "Dismissal/Termination"),
+    ("T_Other_reason", "Other reason(Inter Co transfer)"))
 status_choices = (("In_service", "In_service"), ("Not_in_service", "Not_in_service"))
 gender_choices = (("Male", "Male"), ("Female", "Female"))
 
@@ -89,6 +90,10 @@ class Employee(models.Model):
 
         # import ipdb; ipdb.set_trace()
 
+class Choices(models.Model):
+    c_value= models.CharField(verbose_name="value",max_length=15, primary_key=True)
+    c_name = models.CharField(verbose_name="name",max_length=40)
+    c_category = models.CharField(verbose_name="category",max_length=40)
 
 # trail_choices = (("Join", "Join"), ("Terminate", "Terminate"), ("Transfer_In", "Transfer_Out"),)
 # class EmployeeTrail(models.Model):

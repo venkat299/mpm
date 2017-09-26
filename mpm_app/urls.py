@@ -25,7 +25,12 @@ urlpatterns = [
     
     url(r'^emp/list/area/$', views.emp_area_summ , name='emp_area_summ'),
     url(r'^emp/list/unit/(?P<area_code>\d+)$', views.emp_unit_summ , name='emp_unit_summ'),
-    url(r'^emp/list/desg/(?P<unit_code>\w+)$', views.emp_desg_summ , name='emp_desg_summ'),
+
+    url(r'^emp/list/desg/$', views.emp_desg_summ , name='emp_desg_summ'),
+    url(r'^emp/list/desg/(?P<area_code>\w+)$', views.emp_desg_area_summ , name='emp_desg_area_summ'),
+    url(r'^emp/list/desg/unit/(?P<unit_code>\w+)$', views.emp_desg_unit_summ , name='emp_desg_unit_summ'),
+
+    url(r'^emp/add_red/wcl/$', views.emp_add_red , name='emp_add_red'),
 
     url(
         r'^desg-autocomplete/$',

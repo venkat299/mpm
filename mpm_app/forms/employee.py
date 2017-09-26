@@ -14,26 +14,7 @@ import datetime
 
 from mpm_app.forms.bootstrap import SubmitCancelFormHelper, ModelFormWithHelper
 
-from mpm_app.models import Employee, Desg, Unit
-
-appointment_choices = ( ("NA", "NA"),("Land Losers", "Land_Losers"),
-    ("Fresh Recruitment", "Fresh_Recruitment"),
-    ("In lieu of Death", "Death"),
-    ("In lieu of perm Disability", "Disability"),
-    ("Female VRS", "Female_VRS"),
-    ("Reinstt_Rejoin", "Reinstt_Rejoin"),
-    ("Other reason(Inter Co transfer)", "other_tranfer"),
-   )
-termination_choices = ( ("NA", "NA"),("Retirement", "Retirement"),
-    ("Resignation", "Resignation"),
-    ("Medically Unfit", "Unfit"),
-    ("Death", "Death"),
-    ("Female VRS", "Female_VRS"),
-    ("VRS BPE", "VRS"),
-    ("Dismissal/Termination", "Dismissal"),
-    ("Other reason(Inter Co transfer)", "other_tranfer"))
-status_choices = (("In_Service", "In_Service"), ("Not_in_service", "Not_in_service"))
-gender_choices = (("Male", "Male"), ("Female", "Female"))
+from mpm_app.models import Employee, Desg, Unit, appointment_choices, termination_choices, status_choices, gender_choices
 
 class EmployeeListFormHelper(FormHelper):    
     form_id = 'customer-search-form'
@@ -78,7 +59,7 @@ class EmployeeFormHelper(FormHelper):
             ),
             Div(
                 Div('e_status' , css_class='col-md-3'),
-                # Div('e_dob' , css_class='col-md-3'),
+                # Div('e_doj' , css_class='col-md-3'),
                 Div('e_join' , css_class='col-md-3'),
                 Div('e_termi' , css_class='col-md-3'),
                 Div(Submit('submit', 'Apply Filter'), css_class='col-md-3'), css_class='row'
@@ -107,7 +88,7 @@ class EmpEditForm(forms.ModelForm):
     e_join = forms.ChoiceField(label = "Service Join Type:",required=False, choices=appointment_choices)
     e_doj = forms.DateField(label = "Service Join Date:",required=False,
         widget=MySelectDateWidget(
-            years=range(1955, datetime.date.today().year),
+            years=range(1955, datetime.date.today().year+1),
             empty_label=("Year", "Month", "Day"),
     ),)
     e_dot = forms.DateField(label = "Service Termination Date:", required=False,  widget=MySelectDateWidget(
@@ -127,7 +108,7 @@ class EmpEditForm(forms.ModelForm):
         # widget=autocomplete.ModelSelect2(url='unit-autocomplete',attrs={'data-minimum-input-length': 3,})
         )
     e_unit_work = forms.ModelChoiceField(label = "Working Unit:", queryset=Unit.objects.filter(u_status__isnull=True).order_by('u_area','u_type','u_name'),
-        widget=autocomplete.ModelSelect2(url='unit-autocomplete')
+        # widget=autocomplete.ModelSelect2(url='unit-autocomplete')
         )
     
     class Meta:

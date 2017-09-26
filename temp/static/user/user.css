@@ -100,7 +100,7 @@ h1,  {
   /*color: #6cf25d !important;*/
   color:#6dff05 !important;
 }
-.requiredField{
+.requiredField, .control-label {
   color:  #337ab7 !important;
 }
 .pg_header_row{

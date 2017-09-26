@@ -3,7 +3,10 @@
 {% load crispy_forms_tags %}
 
 <link rel="stylesheet" href="{% static 'user/user.css' %}" />
-<link rel="stylesheet" href="{% static 'selectize/dist/css/selectize.css' %}" />
+
+<link rel="stylesheet" href="{% static 'user/user.css' %}" />
+<link rel="stylesheet" href="{% static 'autocomplete_light/select2.css' %}" />
+<link rel="stylesheet" href="{% static 'autocomplete_light/vendor/select2/dist/css/select2.css' %}" />
 
 
 {% block content %}
@@ -12,16 +15,28 @@
         <h3 class="panel-title p_header">Edit Employee Details</h3>
       </div>
       <div class="panel-body">
+<!--         <link href= {% static 'autocomplete_light/select2.css' %}" type="text/css" media="all" rel="stylesheet" />
+<script type="text/javascript" src="{% static  'autocomplete_light/jquery.init.js' %}"></script>
+<script type="text/javascript" src="{% static  'autocomplete_light/autocomplete.init.js' %}"></script>
+<script type="text/javascript" src="{% static  'autocomplete_light/vendor/select2/dist/js/select2.full.js' %}"></script>
+<script type="text/javascript" src="{% static  'autocomplete_light/select2.js' %}"></script> -->
         {% crispy form %}
       </div>
     </div>
 {% endblock %}
 
-
+<script type="text/javascript" src="{% static 'autocomplete_light/vendor/select2/dist/js/select2.full.js' %}"></script>
 <script>
 $(function() {
-    $('#id_e_unit_roll').select2();
-     $('#id_e_unit_work').select2();
-      $('#id_e_desg').select2();
+    var rol_unit_combo = $('#id_e_unit_roll').select2();
+    $('#id_e_unit_work').select2();
+    $('#id_e_desg').select2();
+
+    rol_unit_combo.on('select2:change', function (e) {
+  var data = e.params;
+    console.log(data);
+    // $('#mySelect2').val('US');
+})
 });
+
 </script>
