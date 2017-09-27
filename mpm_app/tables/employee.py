@@ -104,7 +104,7 @@ class EmpSummAreaTable(tables.Table):
     # ln_unit = tables.LinkColumn('emp_unit_summ', kwargs={'area_code':A('e_unit_roll__u_area__a_code')}, 
     #             verbose_name='area code', accessor='e_unit_roll__u_area__a_name',footer='Total:', attrs={'class':'edit_link', 'a': {'next':'./', 'class':'convert_link'}})
     ln_desg = tables.LinkColumn('emp_desg_area_summ', kwargs={'area_code':A('e_unit_roll__u_area__a_code')}, 
-                verbose_name='desg summ', accessor='e_unit_roll__u_area__a_code',footer='Total:', attrs={'class':'edit_link', 'a': {'next':'./', 'class':'convert_link'}})
+                verbose_name='click for desg summ', accessor='e_unit_roll__u_area__a_code',footer='Total:', attrs={'class':'edit_link', 'a': {'next':'./', 'class':'convert_link'}})
     area_code = tables.LinkColumn('emp_unit_summ', kwargs={'area_code':A('e_unit_roll__u_area__a_code')}, 
                 verbose_name='area code', accessor='e_unit_roll__u_area__a_name',footer='Total:', attrs={'class':'edit_link', 'a': {'next':'./', 'class':'convert_link'}})
     # area_code = tables.Column(accessor='e_unit_roll__u_area__a_code')

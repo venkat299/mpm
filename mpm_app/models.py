@@ -2,6 +2,8 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
+from django.conf import settings
 
 class Area(models.Model):
     a_name = models.CharField(max_length=20)
@@ -56,6 +58,7 @@ termination_choices = (("T_NA", "NA"),
 status_choices = (("In_service", "In_service"), ("Not_in_service", "Not_in_service"))
 gender_choices = (("Male", "Male"), ("Female", "Female"))
 
+
 class Employee(models.Model):
 
     e_eis = models.CharField(verbose_name="EIS No",max_length=15, primary_key=True)
@@ -89,6 +92,44 @@ class Employee(models.Model):
             raise ValidationError(_('Working Unit should match area of On-roll unit'))
 
         # import ipdb; ipdb.set_trace()
+
+class AdditionCat(models.Model):
+    ac_value= models.CharField(verbose_name="value",max_length=15, primary_key=True)
+    ac_name = models.CharField(verbose_name="name",max_length=40)
+
+class TerminationCat(models.Model):
+    tc_value= models.CharField(verbose_name="value",max_length=15, primary_key=True)
+    tc_name = models.CharField(verbose_name="name",max_length=40)
+
+class Addition(models.Model):
+    a_eis = models.ForeignKey(Employee,verbose_name="Employee", on_delete=models.CASCADE)
+    a_reason = models.ForeignKey(AdditionCat,verbose_name="Category", on_delete=models.CASCADE)
+    a_date = models.DateField(verbose_name="Addition Date")
+    a_edit_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="Edited by")
+    a_edit_on = models.DateTimeField(verbose_name="Edit time")
+
+class Termination(models.Model):
+    t_eis = models.ForeignKey(Employee,verbose_name="Employee", on_delete=models.CASCADE)
+    t_reason = models.ForeignKey(TerminationCat,verbose_name="Category", on_delete=models.CASCADE)
+    t_date = models.DateField(verbose_name="Termination Date")
+    t_edit_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="Edited by")
+    t_edit_on = models.DateTimeField(verbose_name="Edit time")
+
+transfer_choices = (("Transfer_In", "Transfer In"), ("Transfer_Out", "Transfer Out"))
+class TransferHistory(models.Model):
+    th_eis = models.ForeignKey(Employee,verbose_name="Employee", on_delete=models.CASCADE)
+    th_unit = models.ForeignKey(Unit,verbose_name="On-Roll Unit", on_delete=models.CASCADE)
+    th_category = models.CharField(verbose_name="Category",choices=transfer_choices, default="Transfer_In", max_length=20)
+    th_date = models.DateField(verbose_name="Tranfer Date")
+    th_edit_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="Edited by")
+    th_edit_on = models.DateTimeField(verbose_name="Edit time")
+
+class PromotionHistory(models.Model):
+    p_eis = models.ForeignKey(Employee,verbose_name="Employee", on_delete=models.CASCADE)
+    p_desg = models.ForeignKey(Desg,verbose_name="Designation", on_delete=models.CASCADE)
+    p_date = models.DateField(verbose_name="Promote Date")
+    p_edit_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="Edited by")
+    p_edit_on = models.DateTimeField(verbose_name="Edit time")
 
 class Choices(models.Model):
     c_value= models.CharField(verbose_name="value",max_length=15, primary_key=True)
