@@ -67,6 +67,7 @@ class EmployeeListView(GroupRequiredMixin,PagedFilteredTableView):
 
     def get_queryset(self):
         qs = super(EmployeeListView, self).get_queryset()
+        # print(qs.query)
         return qs
     
     def post(self, request, *args, **kwargs):
@@ -115,6 +116,7 @@ ZZ = Count(Case(When(e_desg__d_code__startswith='ZZ',then=1),output_field=Intege
 @user_passes_test(in_apm_group)
 def emp_area_summ(request):
     qs = Employee.objects.values('e_unit_roll__u_area__a_code','e_unit_roll__u_area__a_name').order_by('e_unit_roll__u_area__a_code').filter(e_status='In_service').annotate(tot=Count('e_unit_roll'),
+                d2_code = Substr('e_unit_roll__u_code',2,2),
                 male=Count(Case(When(e_gender__iexact='Male',then=1),output_field=IntegerField)), 
                 female=Count(Case(When(e_gender__iexact='Female',then=1),output_field=IntegerField)),
                 T1 =T1, TA=TA, TB=TB, TC=TC, TD=TD, TE=TE, TF=TF, TG=TG, TH=TH, GS=GS, G1=G1, G2=G2, G3=G3, XS=XS, XA=XA, XB=XB, XC=XC, XD=XD, XE=XE, C6=C6, C5=C5, C4=C4, C3=C3, C2=C2, C1=C1, PR=PR, ZZ=ZZ,
@@ -157,7 +159,7 @@ def emp_desg_unit_summ(request, unit_code):
 
 def emp_desg_area_summ(request, area_code):
     qs = Employee.objects.values('e_desg__d_gcode','e_unit_roll__u_area__a_code','e_desg__d_gdesig').filter(e_unit_roll__u_area__a_code=area_code,e_status='In_service').annotate(
-                # d5_code = Substr('e_desg__d_code',3,5),
+                # d2_code = Substr('e_desg__d_code',3,2),
                 # unit = '',
                 tot=Count('e_unit_roll'),
                 male=Count(Case(When(e_gender__iexact='Male',then=1),output_field=IntegerField)), 

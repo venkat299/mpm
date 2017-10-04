@@ -58,6 +58,18 @@ termination_choices = (("T_NA", "NA"),
 status_choices = (("In_service", "In_service"), ("Not_in_service", "Not_in_service"))
 gender_choices = (("Male", "Male"), ("Female", "Female"))
 
+class AdditionCat(models.Model):
+    ac_value= models.CharField(verbose_name="value",max_length=15, primary_key=True)
+    ac_name = models.CharField(verbose_name="name",max_length=40)
+    def __str__(self):
+        return self.ac_name
+
+
+class TerminationCat(models.Model):
+    tc_value= models.CharField(verbose_name="value",max_length=15, primary_key=True)
+    tc_name = models.CharField(verbose_name="name",max_length=40)
+    def __str__(self):
+        return self.tc_name
 
 class Employee(models.Model):
 
@@ -72,8 +84,8 @@ class Employee(models.Model):
 
     e_doj  = models.DateField(verbose_name="Service Join Date",null=True, blank=True)
     e_dot  = models.DateField(verbose_name="Service Termination Date",null=True,  blank=True)
-    e_join = models.CharField(verbose_name="Service Join Type",choices=appointment_choices, default="NA", max_length=20)
-    e_termi = models.CharField(verbose_name="Service Termination Type",choices=termination_choices, default="NA", max_length=20)
+    e_join = models.ForeignKey(AdditionCat,verbose_name="Service Join Type", default="A_NA", max_length=20)
+    e_termi = models.ForeignKey(TerminationCat,verbose_name="Service Termination Type", default="T_NA", max_length=20)
     e_status = models.CharField(verbose_name="Service Status",choices=status_choices, default="In_service", max_length=20)
     e_dop  = models.DateField(verbose_name="Last promo. Date",null=True, blank=True) # date of last promotion
 
@@ -93,36 +105,36 @@ class Employee(models.Model):
 
         # import ipdb; ipdb.set_trace()
 
-class AdditionCat(models.Model):
-    ac_value= models.CharField(verbose_name="value",max_length=15, primary_key=True)
-    ac_name = models.CharField(verbose_name="name",max_length=40)
-
-class TerminationCat(models.Model):
-    tc_value= models.CharField(verbose_name="value",max_length=15, primary_key=True)
-    tc_name = models.CharField(verbose_name="name",max_length=40)
 
 class Addition(models.Model):
-    a_eis = models.ForeignKey(Employee,verbose_name="Employee", on_delete=models.CASCADE)
+    a_eis = models.OneToOneField(Employee,verbose_name="Employee", on_delete=models.CASCADE)
     a_reason = models.ForeignKey(AdditionCat,verbose_name="Category", on_delete=models.CASCADE)
     a_date = models.DateField(verbose_name="Addition Date")
     a_edit_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="Edited by")
     a_edit_on = models.DateTimeField(verbose_name="Edit time")
+    a_unit = models.ForeignKey(Unit,verbose_name="On-Roll Unit", on_delete=models.CASCADE)
+
 
 class Termination(models.Model):
-    t_eis = models.ForeignKey(Employee,verbose_name="Employee", on_delete=models.CASCADE)
+    t_eis = models.OneToOneField(Employee,verbose_name="Employee", on_delete=models.CASCADE)
     t_reason = models.ForeignKey(TerminationCat,verbose_name="Category", on_delete=models.CASCADE)
     t_date = models.DateField(verbose_name="Termination Date")
     t_edit_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="Edited by")
     t_edit_on = models.DateTimeField(verbose_name="Edit time")
+    t_unit = models.ForeignKey(Unit,verbose_name="On-Roll Unit", on_delete=models.CASCADE)
 
 transfer_choices = (("Transfer_In", "Transfer In"), ("Transfer_Out", "Transfer Out"))
 class TransferHistory(models.Model):
     th_eis = models.ForeignKey(Employee,verbose_name="Employee", on_delete=models.CASCADE)
-    th_unit = models.ForeignKey(Unit,verbose_name="On-Roll Unit", on_delete=models.CASCADE)
-    th_category = models.CharField(verbose_name="Category",choices=transfer_choices, default="Transfer_In", max_length=20)
+    # th_old_unit = models.ForeignKey(Unit,verbose_name="Previous Unit", on_delete=models.CASCADE)
+    th_unit = models.ForeignKey(Unit,verbose_name="On-Roll Unit", related_name='th_unit',on_delete=models.CASCADE)
+    th_prev_unit = models.ForeignKey(Unit,verbose_name="On-Roll Unit", related_name='th_prev_unit',on_delete=models.CASCADE)
+    # th_category = models.CharField(verbose_name="Category",choices=transfer_choices, default="Transfer_In", max_length=20)
     th_date = models.DateField(verbose_name="Tranfer Date")
     th_edit_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="Edited by")
     th_edit_on = models.DateTimeField(verbose_name="Edit time")
+    class Meta:
+        unique_together = ('th_eis', 'th_unit','th_prev_unit','th_date')
 
 class PromotionHistory(models.Model):
     p_eis = models.ForeignKey(Employee,verbose_name="Employee", on_delete=models.CASCADE)
@@ -130,6 +142,9 @@ class PromotionHistory(models.Model):
     p_date = models.DateField(verbose_name="Promote Date")
     p_edit_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="Edited by")
     p_edit_on = models.DateTimeField(verbose_name="Edit time")
+    p_unit = models.ForeignKey(Unit,verbose_name="On-Roll Unit", on_delete=models.CASCADE)
+    class Meta:
+        unique_together = ('p_eis', 'p_desg',)
 
 class Choices(models.Model):
     c_value= models.CharField(verbose_name="value",max_length=15, primary_key=True)

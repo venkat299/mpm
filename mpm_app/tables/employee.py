@@ -8,7 +8,7 @@ from django.utils.html import format_html
 
 from django.db import models
 
-from mpm_app.models import Employee, Desg, Unit
+from mpm_app.models import Employee, Desg, Unit, TransferHistory, PromotionHistory
 
 class EmployeeFilter(FilterSet):
     # author = ModelChoiceFilter(queryset=Author.objects.all())
@@ -54,12 +54,17 @@ class EmployeeFilter(FilterSet):
 
 class EmployeeTable(tables.Table):
     # a': {'style': 'color: red;', 'next':'{% request.path %}'}
-    eis = tables.LinkColumn('emp_edit', args=[A('pk'),], 
-                verbose_name='EIS', accessor='pk', attrs={'class':'edit_link', 'a': {'next':'./', 'class':'convert_link'}})
+    eis = tables.Column(
+                verbose_name='Employe_No', accessor='e_eis')
     # delete_link = tables.LinkColumn('bug_delete', args=[A('pk')], 
     #             verbose_name='Delete',accessor='pk', attrs={'class':'delete_link'})
 
-    # eis = tables.Column(accessor='e_eis')
+    x_edit = tables.Column(accessor='e_eis', verbose_name='',)
+    x_transfer = tables.Column(accessor='e_eis', verbose_name='',)
+    x_promote = tables.Column(accessor='e_eis', verbose_name='',)
+    x_terminate = tables.Column(accessor='e_eis', verbose_name='',)
+
+    # eis_x = tables.Column(accessor='e_eis', verbose_name='Links_for_edit',)
     regsno = tables.Column(accessor='e_regsno')
     name = tables.Column(accessor='e_name')
     dob = tables.DateColumn(accessor='e_dob',short=True, verbose_name='DOB')
@@ -84,12 +89,55 @@ class EmployeeTable(tables.Table):
     class Meta:
         model = Employee
         attrs = {"class": "rwd-table"}
-        fields = ('eis', 'regsno', 'name', 'dob','gender','dscd','gdesig', 'desg', 'grade','discp','unit_roll_code','unit_roll', 'unit_work', 'doj','join_type', 'dot', 'termination','dop','status')
-        sequence = ('eis', 'regsno', 'name', 'dob','gender','dscd', 'desg', 'grade','unit_roll_code','unit_roll', 'unit_work','gdesig','discp', 'doj','join_type', 'dot', 'termination','dop','status')
+        fields = ('x_edit','x_transfer','x_promote','x_terminate','eis,' 'regsno', 'name', 'dob','gender','dscd','gdesig', 'desg', 'grade','discp','unit_roll_code','unit_roll', 'unit_work', 'doj','join_type', 'dot', 'termination','dop','status')
+        sequence = ('x_edit','x_transfer','x_promote','x_terminate','eis','regsno', 'name', 'dob','gender','dscd', 'desg', 'grade','unit_roll_code','unit_roll', 'unit_work','gdesig','discp', 'doj','join_type', 'dot', 'termination','dop','status')
         
         #attrs = {"class": "table-striped table-bordered"}
-        empty_text = "There are no customers matching the search criteria..."
+        empty_text = "There are no employees matching the search criteria..."
         # add class="paleblue" to <table> tag
+
+    def render_eis(self,record):
+        url = reverse('emp_detail',kwargs={'pk':record.e_eis})
+        return format_html('''
+            <a title="Employee Detail" next:"./", class=" convert_link linkcolumn" href="{}">{}</a>
+            ''', url,record.e_eis) 
+
+    def render_x_edit(self,record):
+        url = reverse('emp_update',kwargs={'pk':record.e_eis})
+        return format_html('''
+            <a title="Edit Employee" next:"./", class="convert_link edit_icon_16" href="{}"></a>
+            ''', url) 
+    def render_x_transfer(self,record):
+        url = reverse('emp_transfer',kwargs={'pk':record.e_eis})
+        return format_html('''
+            <a title="Transfer Employee" next:"./", class="convert_link transfer_icon_16" href="{}"></a>
+            ''', url) 
+    def render_x_promote(self,record):
+        url = reverse('emp_promote',kwargs={'pk':record.e_eis})
+        return format_html('''
+            <a title="Promote Employee" next:"./", class="convert_link promote_icon_16" href="{}"></a>
+            ''', url) 
+    def render_x_terminate(self,record):
+        url = reverse('emp_terminate',kwargs={'pk':record.e_eis})
+        return format_html('''
+            <a title="Terminate Employee" next:"./", class="convert_link terminate_icon_16" href="{}"></a>
+            ''', url) 
+    
+
+    # def render_eis_x(self, record):
+    #     url = reverse('emp_update')
+    #     return format_html('''
+    #         <div class"edit_link">
+    #         <a title="Edit Employee" next:"./", class="convert_link iconFriends edit_icon_16" href="{}{}"></a>
+    #         <span class"link_col_summ">|</span>
+    #         <a title="Terminate" next:"./", class="convert_link iconFriends terminate_icon_16"></a>
+    #         <span class"link_col_summ">|</span>
+    #         <a title="Tranfer to other Unit/Area" next:"./", class="convert_link iconFriends transfer_icon_16"></a>
+    #         <span class"link_col_summ">|</span>
+    #         <a title="Promote" next:"./", class="convert_link iconFriends promote_icon_16"></a>
+    #         </div>''', url, record.e_eis,  record.e_eis) 
+    
+
 
 def suma_footer(table):
     try:
@@ -103,8 +151,11 @@ def suma_footer(table):
 class EmpSummAreaTable(tables.Table):
     # ln_unit = tables.LinkColumn('emp_unit_summ', kwargs={'area_code':A('e_unit_roll__u_area__a_code')}, 
     #             verbose_name='area code', accessor='e_unit_roll__u_area__a_name',footer='Total:', attrs={'class':'edit_link', 'a': {'next':'./', 'class':'convert_link'}})
+    
+    ln_add = tables.LinkColumn('emp_unit_addi_redu', kwargs={'code':A('d2_code')}, 
+                verbose_name='link: add/ red', accessor='e_unit_roll__u_area__a_code', attrs={'class':'convert_link edit_icon_16', 'a': {'next':'./', 'class':'convert_link'}})
     ln_desg = tables.LinkColumn('emp_desg_area_summ', kwargs={'area_code':A('e_unit_roll__u_area__a_code')}, 
-                verbose_name='click for desg summ', accessor='e_unit_roll__u_area__a_code',footer='Total:', attrs={'class':'edit_link', 'a': {'next':'./', 'class':'convert_link'}})
+                verbose_name='link: desg summ', accessor='e_unit_roll__u_area__a_code', attrs={'class':'edit_link', 'a': {'next':'./', 'class':'convert_link'}})
     area_code = tables.LinkColumn('emp_unit_summ', kwargs={'area_code':A('e_unit_roll__u_area__a_code')}, 
                 verbose_name='area code', accessor='e_unit_roll__u_area__a_name',footer='Total:', attrs={'class':'edit_link', 'a': {'next':'./', 'class':'convert_link'}})
     # area_code = tables.Column(accessor='e_unit_roll__u_area__a_code')
@@ -147,6 +198,7 @@ class EmpSummAreaTable(tables.Table):
 
     class Meta:
         attrs = {"class": "fixed_headers rwd-table", id:"my_table"}
+
 
 class EmpSummUnitTable(tables.Table):
     unit_code = tables.LinkColumn('emp_desg_unit_summ', kwargs={'unit_code':A('e_unit_roll')}, 
@@ -452,31 +504,35 @@ class EmpAddRedTable(tables.Table):
     
     def return_url(self, record, fiscal_yr, cell_val):
         url_empl_list = reverse('empl_list')
-        category = 'join'
-        date_col ='doj'
-        if record.category is 'term':
-            category = 'term'
+        category = ''
+        date_col =''
+        # print(record.category , record.category == 'term', record.category == 'join')
+        if record.category == 'term':
+            category = 'termi'
             date_col ='dot'
-            reason = record.e_termi
+            reason = record.cat_id
         else:
-            reason = record.e_join
+            category = 'join'
+            date_col ='doj'
+            reason = record.cat_id
         # import ipdb; ipdb.set_trace()
         return format_html('''<a class="link_col_summ" 
             href="{}?e_{}__year={}&e_{}={}">{}</a>''',
             url_empl_list,date_col,fiscal_yr,category,reason,cell_val)
     def return_url_month(self, record, fiscal_yr,month ,cell_val):
         url_empl_list = reverse('empl_list')
+        # import ipdb; ipdb.set_trace()
         category = ''
         date_col =''
         reason = ''
-        if record.category == 'termi':
+        if record.category == 'term':
             category = 'termi'
             date_col ='dot'
-            reason = record.e_termi+'&e_status=Not_in_service'
+            reason = record.cat_id +'&e_status=Not_in_service'
         else:
             category = 'join'
             date_col ='doj'
-            reason = record.e_join
+            reason = record.cat_id
 
         url_empl_list = reverse('empl_list')
         # import ipdb; ipdb.set_trace()
@@ -501,4 +557,19 @@ class EmpAddRedTable(tables.Table):
     class Meta:
         attrs = {"class": "fixed_headers rwd-table", id:"my_table"}
 
-        
+
+
+class EmpPromotionTable(tables.Table):
+
+    class Meta:
+        model = PromotionHistory
+        attrs = {"class": "fixed_headers rwd-table", id:"my_table"}
+        empty_text = "There are no records matching the search criteria..."
+
+class EmpTransferTable(tables.Table):
+
+    class Meta:
+        model = TransferHistory
+        attrs = {"class": "fixed_headers rwd-table", id:"my_table"}
+        empty_text = "There are no records matching the search criteria..."
+ 
