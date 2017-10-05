@@ -41,6 +41,7 @@ class PagedFilteredTableView(ExportMixin, SingleTableView):
     filter_class = None
     formhelper_class = None
     context_filter_name = 'filter'
+    exclude_column = ('x_edit','x_transfer','x_promote','x_terminate')
 
     def get_queryset(self, **kwargs):
       qs = super(PagedFilteredTableView, self).get_queryset()
@@ -67,7 +68,11 @@ class EmployeeListView(GroupRequiredMixin,PagedFilteredTableView):
 
     def get_queryset(self):
         qs = super(EmployeeListView, self).get_queryset()
-        # print(qs.query)
+        # try:
+        #   print(qs.query)
+        # except Exception as e:
+        #   print(e)
+        
         return qs
     
     def post(self, request, *args, **kwargs):
@@ -199,72 +204,6 @@ fiscal_end = datetime.date(fiscal_yr+1,3,30)
 prev_fiscal_st = datetime.date(fiscal_yr-1,4,1)
 prev_fiscal_end = datetime.date(fiscal_yr,3,30)
 
-@user_passes_test(in_apm_group)
-def emp_add_red(request):
-
-    qs_add = Employee.objects.raw('''SELECT 1 as e_eis,'join' as category,c_name AS reason,
-                    a.*
-                    FROM mpm_app_choices
-                        LEFT JOIN
-                            (
-                        SELECT e_join,
-                  sum(CASE WHEN e_doj BETWEEN '2017-04-01' AND '2018-03-31' THEN 1 ELSE 0 END) AS curr_yr,
-                  sum(CASE WHEN strftime('%Y-%m', e_doj) = '2017-04' THEN 1 ELSE 0 END) AS apr,
-                  sum(CASE WHEN strftime('%Y-%m', e_doj) = '2017-05' THEN 1 ELSE 0 END) AS may,
-                  sum(CASE WHEN strftime('%Y-%m', e_doj) = '2017-06' THEN 1 ELSE 0 END) AS jun,
-                  sum(CASE WHEN strftime('%Y-%m', e_doj) = '2017-07' THEN 1 ELSE 0 END) AS jul,
-                  sum(CASE WHEN strftime('%Y-%m', e_doj) = '2017-08' THEN 1 ELSE 0 END) AS aug,
-                  sum(CASE WHEN strftime('%Y-%m', e_doj) = '2017-09' THEN 1 ELSE 0 END) AS sep,
-                  sum(CASE WHEN strftime('%Y-%m', e_doj) = '2017-10' THEN 1 ELSE 0 END) AS oct,
-                  sum(CASE WHEN strftime('%Y-%m', e_doj) = '2017-11' THEN 1 ELSE 0 END) AS nov,
-                  sum(CASE WHEN strftime('%Y-%m', e_doj) = '2017-12' THEN 1 ELSE 0 END) AS dec,
-                  sum(CASE WHEN strftime('%Y-%m', e_doj) = '2018-01' THEN 1 ELSE 0 END) AS jan,
-                  sum(CASE WHEN strftime('%Y-%m', e_doj) = '2018-02' THEN 1 ELSE 0 END) AS feb,
-                  sum(CASE WHEN strftime('%Y-%m', e_doj) = '2018-03' THEN 1 ELSE 0 END) AS mar,
-                  sum(CASE WHEN e_doj BETWEEN '2016-04-01' AND '2017-03-31' THEN 1 ELSE 0 END) AS prev_yr
-             FROM mpm_app_employee
-            GROUP BY e_join
-                )
-                    a ON a.e_join = mpm_app_choices.c_value
-                    WHERE c_category = 'Appointment'
-    ''')
-
-
-    qs_red = Employee.objects.raw('''SELECT 1 as e_eis,'termi' as category,c_name AS reason,
-                    a.*
-                    FROM mpm_app_choices
-                        LEFT JOIN
-                            (
-                        SELECT e_termi,e_join,
-                  sum(CASE WHEN e_dot BETWEEN '2017-04-01' AND '2018-03-31' THEN 1 ELSE 0 END) AS curr_yr,
-                  sum(CASE WHEN strftime('%Y-%m', e_dot) = '2017-04' THEN 1 ELSE 0 END) AS apr,
-                  sum(CASE WHEN strftime('%Y-%m', e_dot) = '2017-05' THEN 1 ELSE 0 END) AS may,
-                  sum(CASE WHEN strftime('%Y-%m', e_dot) = '2017-06' THEN 1 ELSE 0 END) AS jun,
-                  sum(CASE WHEN strftime('%Y-%m', e_dot) = '2017-07' THEN 1 ELSE 0 END) AS jul,
-                  sum(CASE WHEN strftime('%Y-%m', e_dot) = '2017-08' THEN 1 ELSE 0 END) AS aug,
-                  sum(CASE WHEN strftime('%Y-%m', e_dot) = '2017-09' THEN 1 ELSE 0 END) AS sep,
-                  sum(CASE WHEN strftime('%Y-%m', e_dot) = '2017-10' THEN 1 ELSE 0 END) AS oct,
-                  sum(CASE WHEN strftime('%Y-%m', e_dot) = '2017-11' THEN 1 ELSE 0 END) AS nov,
-                  sum(CASE WHEN strftime('%Y-%m', e_dot) = '2017-12' THEN 1 ELSE 0 END) AS dec,
-                  sum(CASE WHEN strftime('%Y-%m', e_dot) = '2018-01' THEN 1 ELSE 0 END) AS jan,
-                  sum(CASE WHEN strftime('%Y-%m', e_dot) = '2018-02' THEN 1 ELSE 0 END) AS feb,
-                  sum(CASE WHEN strftime('%Y-%m', e_dot) = '2018-03' THEN 1 ELSE 0 END) AS mar,
-                  sum(CASE WHEN e_dot BETWEEN '2016-04-01' AND '2017-03-31' THEN 1 ELSE 0 END) AS prev_yr
-             FROM mpm_app_employee
-             where e_status = 'Not_in_service'
-            GROUP BY e_termi
-                )
-                    a ON a.e_termi = mpm_app_choices.c_value
-                    WHERE c_category = 'Termination'
-    ''')
-    # result_list = list(chain(qs0,qs1,qs2,qs3,qs4,qs5,qs6,qs7))
-
-    table1 = EmpAddRedTable(qs_add);
-    table2 = EmpAddRedTable(qs_red);
-
-    return render(request, 'emp_add_red.html', {
-        'table1': table1, 'table2': table2
-    })
 
 class CreateEmpView(GroupRequiredMixin, CreateView):
     """A create view for Foo model"""

@@ -202,7 +202,7 @@ def emp_unit_addi_redu(request,code):
     print('emp_add_red: code=',code)
 
     qs_add = Employee.objects.raw(query.ADDITION.format(curr_yr=fiscal_yr,next_yr=fiscal_yr+1,prev_yr=fiscal_yr-1, filter=code))
-    print(query.ADDITION.format(curr_yr=fiscal_yr,next_yr=fiscal_yr+1,prev_yr=fiscal_yr-1, filter=code))
+    # print(query.ADDITION.format(curr_yr=fiscal_yr,next_yr=fiscal_yr+1,prev_yr=fiscal_yr-1, filter=code))
     
     qs_red = Employee.objects.raw(query.REDUCTION.format(curr_yr=fiscal_yr,next_yr=fiscal_yr+1,prev_yr=fiscal_yr-1, filter=code))
 

@@ -2,18 +2,22 @@
 import django_tables2 as tables
 from django_tables2.utils import A
 import django_filters 
-from django_filters import FilterSet
+from django_filters import FilterSet, DateFromToRangeFilter, DateRangeFilter
+from django.forms.widgets import SelectDateWidget
 from django.core.urlresolvers import reverse
 from django.utils.html import format_html
-
 from django.db import models
+import datetime
+from calendar import monthrange
 
 from mpm_app.models import Employee, Desg, Unit, TransferHistory, PromotionHistory
 
 class EmployeeFilter(FilterSet):
     # author = ModelChoiceFilter(queryset=Author.objects.all())
     # e_desg__d_name = django_filters.CharFilter(lookup_expr='icontains')
-    
+    e_doj = DateFromToRangeFilter()
+    e_dob = DateFromToRangeFilter()
+    e_dot = DateFromToRangeFilter()
     class Meta:
         model = Employee
         fields = ['e_gender','e_desg__d_discp', 'e_desg__d_code','e_dob' ,
@@ -25,6 +29,7 @@ class EmployeeFilter(FilterSet):
                 'extra': lambda f: {
                     'lookup_expr': 'icontains',
                 },
+
             }
         }
     
@@ -59,10 +64,10 @@ class EmployeeTable(tables.Table):
     # delete_link = tables.LinkColumn('bug_delete', args=[A('pk')], 
     #             verbose_name='Delete',accessor='pk', attrs={'class':'delete_link'})
 
-    x_edit = tables.Column(accessor='e_eis', verbose_name='',)
-    x_transfer = tables.Column(accessor='e_eis', verbose_name='',)
-    x_promote = tables.Column(accessor='e_eis', verbose_name='',)
-    x_terminate = tables.Column(accessor='e_eis', verbose_name='',)
+    x_edit = tables.Column(accessor='e_eis', verbose_name='l1', exclude_from_export=True)
+    x_transfer = tables.Column(accessor='e_eis', verbose_name='l2', exclude_from_export=True)
+    x_promote = tables.Column(accessor='e_eis', verbose_name='l3', exclude_from_export=True)
+    x_terminate = tables.Column(accessor='e_eis', verbose_name='l4', exclude_from_export=True)
 
     # eis_x = tables.Column(accessor='e_eis', verbose_name='Links_for_edit',)
     regsno = tables.Column(accessor='e_regsno')
@@ -122,6 +127,13 @@ class EmployeeTable(tables.Table):
         return format_html('''
             <a title="Terminate Employee" next:"./", class="convert_link terminate_icon_16" href="{}"></a>
             ''', url) 
+
+
+    def value_eis(self, record):
+        return record.e_eis
+    def value_name(self, record):
+        return record.e_name
+
     
 
     # def render_eis_x(self, record):
@@ -157,7 +169,7 @@ class EmpSummAreaTable(tables.Table):
     ln_desg = tables.LinkColumn('emp_desg_area_summ', kwargs={'area_code':A('e_unit_roll__u_area__a_code')}, 
                 verbose_name='link: desg summ', accessor='e_unit_roll__u_area__a_code', attrs={'class':'edit_link', 'a': {'next':'./', 'class':'convert_link'}})
     area_code = tables.LinkColumn('emp_unit_summ', kwargs={'area_code':A('e_unit_roll__u_area__a_code')}, 
-                verbose_name='area code', accessor='e_unit_roll__u_area__a_name',footer='Total:', attrs={'class':'edit_link', 'a': {'next':'./', 'class':'convert_link'}})
+                verbose_name='link: unit summ', accessor='e_unit_roll__u_area__a_name',footer='Total:', attrs={'class':'edit_link', 'a': {'next':'./', 'class':'convert_link'}})
     # area_code = tables.Column(accessor='e_unit_roll__u_area__a_code')
     # area_name = tables.Column(accessor='e_unit_roll__u_area__a_name', footer='Total:')
     total = tables.Column(accessor='tot',footer=suma_footer)
@@ -201,13 +213,14 @@ class EmpSummAreaTable(tables.Table):
 
 
 class EmpSummUnitTable(tables.Table):
-    unit_code = tables.LinkColumn('emp_desg_unit_summ', kwargs={'unit_code':A('e_unit_roll')}, 
-                verbose_name='unit code', accessor='e_unit_roll', attrs={'class':'edit_link', 'a': {'next':'./', 'class':'convert_link'}})
-    # area_code = tables.LinkColumn('emp_desg_unit_summ', kwargs={'unit_code':A('e_unit_roll')}, 
-    #             verbose_name='area code', accessor='e_unit_roll', attrs={'class':'edit_link', 'a': {'next':'./', 'class':'convert_link'}})
+    ln_add = tables.LinkColumn('emp_unit_addi_redu', kwargs={'code':A('e_unit_roll')}, 
+                verbose_name='link: add/ red', accessor='e_unit_roll', attrs={'class':'convert_link edit_icon_16', 'a': {'next':'./', 'class':'convert_link'}})
+    ln_desg = tables.LinkColumn('emp_desg_unit_summ', kwargs={'unit_code':A('e_unit_roll')}, 
+                verbose_name='link: desg summ', accessor='e_unit_roll', attrs={'class':'edit_link', 'a': {'next':'./', 'class':'convert_link'}})
     
-    # unit_code = tables.Column(accessor='e_unit_roll')
-    unit_name = tables.Column(accessor='e_unit_roll__u_name', footer='Total:')
+    # unit_name = tables.LinkColumn('empl_list', kwargs={'e_unit_roll__u_code':A('e_unit_roll'),'_export':'csv'}, 
+                # verbose_name='link: download', accessor='e_unit_roll__u_name', attrs={'class':'edit_link', 'a': {'next':'./', 'class':'convert_link'}})
+    unit_name = tables.Column(verbose_name='link: download',accessor='e_unit_roll__u_name', footer='Total:')
     total = tables.Column(accessor='tot',footer=suma_footer)
     male = tables.Column(accessor='male', footer=lambda table: sum(x['male'] for x in table.data))
     female = tables.Column(accessor='female', footer=lambda table: sum(x['female'] for x in table.data))
@@ -246,11 +259,12 @@ class EmpSummUnitTable(tables.Table):
             href="{}?e_unit_roll__u_code={}
             &e_status=In_service&e_desg__d_code={}">{}</a>''',
             url,record['e_unit_roll'],column_id,record[column_id])
+
     
-    # def render_desg_code(self, record):
-    #     # print(record)
-    #     url = reverse('empl_list')
-    #     return format_html('<a href="{}?e_desg__d_code={}&e_unit_roll__u_code={}&e_status=In_service">{}</a>', url, record['d5_code'],record['e_unit_roll'],record['d5_code'])
+    def render_unit_name(self, record):
+        # print(record)
+        url = reverse('empl_list')
+        return format_html('<a class="download_link" href="{}?e_unit_roll__u_code={}&_export=csv">{}</a>', url, record['e_unit_roll'],record['e_unit_roll__u_name'])
 
     # def render_male(self, record):
     #     url = reverse('empl_list')
@@ -384,7 +398,7 @@ class EmpSummDesgTable(tables.Table):
 # url_attrs={ 'a': {'next':'./' , 'class':'convert_link'}}
 class EmpSummDesgAreaTable(tables.Table):
     desg_code = tables.Column( 
-                 verbose_name='desg code', accessor='e_desg__d_gcode')
+                 verbose_name='link: download', accessor='e_desg__d_gcode')
     desg_name = tables.Column(accessor='e_desg__d_gdesig', footer='Total:')
     # total = tables.LinkColumn('empl_list',kwargs={'e_desg__d_code':A('e_desg__d_code'),}, accessor='tot',footer=suma_footer ,empty_values=(0,),attrs={'class':'edit_link', 'a': {'next':'./', 'class':'convert_link'}})
     # total = tables.Column(accessor='tot',footer=suma_footer ,empty_values=(0,))
@@ -428,10 +442,11 @@ class EmpSummDesgAreaTable(tables.Table):
             href="{}?e_status=In_service&e_desg__d_code={}{}&e_unit_roll__u_code={}">{}</a>''',
             url,column_id,record['e_desg__d_gcode'],format(record['e_unit_roll__u_area__a_code'],'02d'),record[column_id])
     
-    # def render_desg_code(self, record):
-    #     # print(record)
-    #     url = reverse('empl_list')
-    #     return format_html('<a href="{}?e_desg__d_code={}&e_status=In_service&e_unit_roll__u_code={}">{}</a>', url, record['e_desg__d_gcode'],format(record['e_unit_roll__u_area__a_code'],'02d'),record['e_desg__d_gcode'])
+        
+    def render_desg_code(self, record):
+        # print(record)
+        url = reverse('empl_list')
+        return format_html('<a class="download_link" href="{}?e_desg__d_code={}&e_unit_roll__u_code={}&_export=csv">{}</a>', url, record['e_desg__d_gcode'],format(record['e_unit_roll__u_area__a_code'],'02d'),record['e_desg__d_gcode'])
 
     def render_total(self, record):
         url = reverse('empl_list')
@@ -519,7 +534,7 @@ class EmpAddRedTable(tables.Table):
         return format_html('''<a class="link_col_summ" 
             href="{}?e_{}__year={}&e_{}={}">{}</a>''',
             url_empl_list,date_col,fiscal_yr,category,reason,cell_val)
-    def return_url_month(self, record, fiscal_yr,month ,cell_val):
+    def return_url_month(self, record, fiscal_yr,month ,cell_val, month_end_date):
         url_empl_list = reverse('empl_list')
         # import ipdb; ipdb.set_trace()
         category = ''
@@ -537,23 +552,23 @@ class EmpAddRedTable(tables.Table):
         url_empl_list = reverse('empl_list')
         # import ipdb; ipdb.set_trace()
         return format_html('''<a class="link_col_summ" 
-            href="{}?e_{}__year={}&e_{}__month={}&e_{}={}">{}</a>''',
-            url_empl_list,date_col,fiscal_yr,date_col,month,category,reason,cell_val)
+            href="{}?e_{}_0={}-{}-01&e_{}_1={}-{}-{}&e_{}={}">{}</a>''',
+            url_empl_list,date_col,fiscal_yr,month,date_col,fiscal_yr,month,month_end_date,category,reason,cell_val)
     
     def render_curr_yr(self, record): return self.return_url(record, fiscal_yr,record.curr_yr )
     def render_prev_yr(self, record): return self.return_url(record, fiscal_yr-1,record.curr_yr )
-    def render_apr(self, record): return self.return_url_month(record,fiscal_yr,4,record.apr)
-    def render_may(self, record): return self.return_url_month(record,fiscal_yr,5,record.may)
-    def render_jun(self, record): return self.return_url_month(record,fiscal_yr,6,record.jun)
-    def render_jul(self, record): return self.return_url_month(record,fiscal_yr,7,record.jul)
-    def render_aug(self, record): return self.return_url_month(record,fiscal_yr,8,record.aug)
-    def render_sep(self, record): return self.return_url_month(record,fiscal_yr,9,record.sep)
-    def render_oct(self, record): return self.return_url_month(record,fiscal_yr,10,record.oct)
-    def render_nov(self, record): return self.return_url_month(record,fiscal_yr,11,record.nov)
-    def render_dec(self, record): return self.return_url_month(record,fiscal_yr,12,record.dec)
-    def render_jan(self, record): return self.return_url_month(record,fiscal_yr+1,1,record.jan)
-    def render_feb(self, record): return self.return_url_month(record,fiscal_yr+1,2,record.feb)
-    def render_mar(self, record): return self.return_url_month(record,fiscal_yr+1,3,record.mar)
+    def render_apr(self, record): return self.return_url_month(record,fiscal_yr,'04',record.apr,30)
+    def render_may(self, record): return self.return_url_month(record,fiscal_yr,'05',record.may,31)
+    def render_jun(self, record): return self.return_url_month(record,fiscal_yr,'06',record.jun,30)
+    def render_jul(self, record): return self.return_url_month(record,fiscal_yr,'07',record.jul,31)
+    def render_aug(self, record): return self.return_url_month(record,fiscal_yr,'08',record.aug,31)
+    def render_sep(self, record): return self.return_url_month(record,fiscal_yr,'09',record.sep,30)
+    def render_oct(self, record): return self.return_url_month(record,fiscal_yr,'10',record.oct,31)
+    def render_nov(self, record): return self.return_url_month(record,fiscal_yr,'11',record.nov,30)
+    def render_dec(self, record): return self.return_url_month(record,fiscal_yr,'12',record.dec,31)
+    def render_jan(self, record): return self.return_url_month(record,fiscal_yr+1,'01',record.jan,31)
+    def render_feb(self, record): return self.return_url_month(record,fiscal_yr+1,'02',record.feb,monthrange(fiscal_yr+1, 2)[1])
+    def render_mar(self, record): return self.return_url_month(record,fiscal_yr+1,'03',record.mar,31)
     class Meta:
         attrs = {"class": "fixed_headers rwd-table", id:"my_table"}
 

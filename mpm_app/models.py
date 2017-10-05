@@ -89,6 +89,10 @@ class Employee(models.Model):
     e_status = models.CharField(verbose_name="Service Status",choices=status_choices, default="In_service", max_length=20)
     e_dop  = models.DateField(verbose_name="Last promo. Date",null=True, blank=True) # date of last promotion
 
+    
+    # def clean_e_name(self):
+    #     return self.cleaned_data['e_name'].capitalize()
+
     def clean(self):
         if self.e_doj is not None and self.e_dot is not None and self.e_dot < self.e_doj:
             raise ValidationError(_('Termination Date is earlier than Join Date'))
@@ -102,6 +106,16 @@ class Employee(models.Model):
         # import ipdb; ipdb.set_trace()
         if self.e_unit_roll_id is not None and self.e_unit_work_id is not None and self.e_unit_roll.u_code[1:3] != self.e_unit_work.u_code[1:3]:
             raise ValidationError(_('Working Unit should match area of On-roll unit'))
+
+        if not (self.e_eis.isdigit() or (len(self.e_eis.split('T'))==2 
+                and (self.e_eis.split('T')[1]).isdigit() 
+                and self.e_eis.split('T')[0] is ''
+            )):
+            raise ValidationError(_('EIS should be a Number or Temporary EIS is should be a number prefixed by a letter "T"'))
+
+        self.e_name = self.e_name.upper()
+        if not self.e_name.isalpha():
+            raise ValidationError(_('Name Should be alphabet Only'))
 
         # import ipdb; ipdb.set_trace()
 

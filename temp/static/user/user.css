@@ -81,7 +81,7 @@ h1,  {
     padding: 1em !important;
   }
 }
-.rwd-table th, .rwd-table td:before, {
+.rwd-table th, .rwd-table td:before {
   color: #dd5 !important;
 }
 
@@ -121,4 +121,7 @@ h1,  {
 .alert.alert-block.alert-error {
     color: red !important;
     background-color: #dd5 !important;
+}
+.download_link {
+  color:#5ed2ff !important
 }
